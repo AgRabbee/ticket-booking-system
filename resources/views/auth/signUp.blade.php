@@ -51,7 +51,7 @@
     <div class="card-body register-card-body">
       <p class="login-box-msg">Register a new membership</p>
 
-    <form id="sign_up" method="POST" action="{{ url('/signup') }}">
+    <form id="sign_up" method="POST" action="{{ url('/signUp') }}">
         {{ csrf_field() }}
 
         <div class="col-md-12">
@@ -207,7 +207,7 @@
         </a>
       </div> --}}
 
-      <a href="{{ url('/signin') }}" class="text-center mt-3 px-2">I already have a membership</a>
+      <a href="{{ url('/signIn') }}" class="text-center mt-3 px-2">I already have a membership</a>
     </div>
     <!-- /.form-box -->
   </div><!-- /.card -->

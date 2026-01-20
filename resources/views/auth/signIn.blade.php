@@ -71,7 +71,7 @@
       @endif
 
 
-      <form id="sign_in" method="POST" action="{{ url('signin') }}" class="col-xs-12">
+      <form id="sign_in" method="POST" action="{{ url('signIn') }}" class="col-xs-12">
           {{ csrf_field() }}
         <div class="input-group mb-3">
           <input type="text" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="Email" required autofocus>
@@ -125,7 +125,7 @@
 
       <div class="d-flex justify-content-between row m-1">
           <div class="col-xs-6">
-              <a href="{{ url('/signup') }}">Register Now!</a>
+              <a href="{{ url('/signUp') }}">Register Now!</a>
           </div>
           <div class="col-xs-6">
               <a href="forgot-password.html">Forgot Password?</a>

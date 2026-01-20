@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Role;
 use App\Models\Company;
 use App\Models\Reservation;
+use App\Models\Role;
 use App\Models\Trip;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Auth;
-use RealRashid\SweetAlert\Facades\Alert;
 use DB;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
@@ -35,7 +34,7 @@ class CompanyController extends Controller
         if (!Auth::user()->companies->count()) {
 
             // return view('company.index');
-        }else{
+        } else {
             return redirect('/company/dashboard');
         }
 
@@ -44,20 +43,20 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'company_name' => 'required|string',
+        $this->validate($request, [
+            'company_name'        => 'required|string',
             'company_description' => 'required|string',
-            'address' => 'required|string',
-            'reg_no' => 'required|string',
-            'tin_no' => 'required|integer',
-            'company_image' => 'image|nullable|max:1999',
-            'trade' => 'required|image|max:1999',
-            'vat' => 'required|image|max:1999',
+            'address'             => 'required|string',
+            'reg_no'              => 'required|string',
+            'tin_no'              => 'required|integer',
+            'company_image'       => 'image|nullable|max:1999',
+            'trade'               => 'required|image|max:1999',
+            'vat'                 => 'required|image|max:1999',
         ]);
 
         //handle company_image upload
@@ -69,10 +68,10 @@ class CompanyController extends Controller
             //get just ext
             $extension = $request->file('company_image')->getClientOriginalExtension();
             //file name to store
-            $fileNameToStore = $fileName.'_'.time().'_.'.$extension;
+            $fileNameToStore = $fileName . '_' . time() . '_.' . $extension;
             //upload image
             $path = $request->file('company_image')->storeAs('public/company_image', $fileNameToStore);
-        }else {
+        } else {
             $fileNameToStore = 'noimage.jpg';
         }
 
@@ -85,7 +84,7 @@ class CompanyController extends Controller
             //get just ext
             $extension = $request->file('trade')->getClientOriginalExtension();
             //file name to store
-            $fileName1ToStore = $fileName.'_'.time().'_.'.$extension;
+            $fileName1ToStore = $fileName . '_' . time() . '_.' . $extension;
             //upload image
             $path = $request->file('trade')->storeAs('public/company_image', $fileName1ToStore);
         }
@@ -99,12 +98,12 @@ class CompanyController extends Controller
             //get just ext
             $extension = $request->file('vat')->getClientOriginalExtension();
             //file name to store
-            $fileName2ToStore = $fileName.'_'.time().'_.'.$extension;
+            $fileName2ToStore = $fileName . '_' . time() . '_.' . $extension;
             //upload image
             $path = $request->file('vat')->storeAs('public/company_image', $fileName2ToStore);
         }
 
-        $company = New Company;
+        $company = new Company;
         $company->company_name = $request['company_name'];
         $company->description = $request['company_description'];
         $company->address = $request['address'];
@@ -118,7 +117,7 @@ class CompanyController extends Controller
         $company->save();
 
         $user_id = Auth::user()->id;
-        $company->users()->attach($user_id, ['status' => 0]);
+        $company->users()->attach($user_id, [ 'status' => 0 ]);
 
         //return redirect('/dashboard')->with('success','company created successfully');
         return redirect('/')->withSuccessMessage('Request for Company Registration Submitted Successfully');
@@ -128,12 +127,12 @@ class CompanyController extends Controller
     public function company_admin()
     {
         $c_admins = DB::table('company_user')
-                    ->join('users','users.id','=','company_user.user_id')
-                    ->join('companies','companies.id','=','company_user.company_id')
-                    ->join('role_user','users.id','role_user.user_id')
-                    ->where('role_user.role_id', '2')
-                    ->orWhere('company_user.status', '0')
-                    ->get();
+            ->join('users', 'users.id', '=', 'company_user.user_id')
+            ->join('companies', 'companies.id', '=', 'company_user.company_id')
+            ->join('role_user', 'users.id', 'role_user.user_id')
+            ->where('role_user.role_id', '2')
+            ->orWhere('company_user.status', '0')
+            ->get();
 
         return view('admin.company_admin')->with('admin_details', $c_admins);
     }
@@ -152,7 +151,7 @@ class CompanyController extends Controller
         $company->company_status = 1;
         $company->save();
 
-        $adminRole = Role::where('name','Admin')->first();
+        $adminRole = Role::where('name', 'Admin')->first();
         $u_id = $request['user_id'];
         $admin = User::find($u_id);
         $admin->roles()->attach($adminRole);
@@ -192,7 +191,7 @@ class CompanyController extends Controller
         $company->company_status = 2;
         $company->save();
 
-        $adminRole = Role::where('name','Admin')->first();
+        $adminRole = Role::where('name', 'Admin')->first();
         $u_id = $request['user_id'];
         $admin = User::find($u_id);
         $admin->roles()->detach($adminRole);
@@ -204,9 +203,9 @@ class CompanyController extends Controller
     {
         if (Auth::user()->companies[0]->pivot->status == 1) {
             return view('company_admin.home');
-        }elseif (Auth::user()->companies[0]->pivot->status == 0) {
+        } elseif (Auth::user()->companies[0]->pivot->status == 0) {
             return redirect('/home')->withInfoMessage('Your registration request is not accepted yet. Contact with System Admin.');
-        }elseif (Auth::user()->companies[0]->pivot->status == 2) {
+        } elseif (Auth::user()->companies[0]->pivot->status == 2) {
             return redirect('/home')->withInfoMessage('Your registration request is Denied. Contact with System Admin.');
         }
 
@@ -217,7 +216,7 @@ class CompanyController extends Controller
     {
         $company_id = Auth::user()->companies[0]->id;
         $driver_details = new Company;
-        return view('company_admin.all_drivers')->with('driver_details',$driver_details->allDrivers($company_id));
+        return view('company_admin.all_drivers')->with('driver_details', $driver_details->allDrivers($company_id));
     }
 
     public function addDriverForm()
@@ -227,14 +226,14 @@ class CompanyController extends Controller
 
     public function addDriver(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'first_name' => 'required|string',
-            'last_name' => 'required|string',
+            'last_name'  => 'required|string',
             // 'email' => 'required|string',
-            'phone' => 'required|string',
-            'password' => 'required|string|min:6|confirmed',
-            'nid' => 'required|integer|max:99999999999',
-            'terms' => 'required',
+            'phone'      => 'required|string',
+            'password'   => 'required|string|min:6|confirmed',
+            'nid'        => 'required|integer|max:99999999999',
+            'terms'      => 'required',
         ]);
 
         $driver = new User;
@@ -246,22 +245,21 @@ class CompanyController extends Controller
         $driver->nid = $request['nid'];
         $driver->user_status = 1;
         $driver->save();
-        $driver->roles()->attach(Role::where('name','Driver')->first());
+        $driver->roles()->attach(Role::where('name', 'Driver')->first());
 
         $driver_id = $driver->id;
         $company_id = Auth::user()->companies[0]->id;
-        $driver->companies()->attach($company_id,['status' => 1]);
+        $driver->companies()->attach($company_id, [ 'status' => 1 ]);
 
         return redirect()->back()->withSuccessMessage('Driver profile added successfully');
     }
-
 
 
     public function allSales()
     {
         $company_id = Auth::user()->companies[0]->id;
         $salesDetails = new Reservation();
-        return view('company_admin.all_sales')->with('salesDetails',$salesDetails->allSales($company_id));
+        return view('company_admin.all_sales')->with('salesDetails', $salesDetails->allSales($company_id));
     }
 
     public function salesReports()
@@ -269,20 +267,20 @@ class CompanyController extends Controller
         $company_id = Auth::user()->companies[0]->id;
 
         $reportData = DB::table('reservations')
-                ->selectRaw('count(reservations.id) total, MONTHNAME(reservations.updated_at) month')
-                ->join('trips','reservations.trip_id','trips.id')
-                ->where('reservations.seat_status','2')
-                ->where('company_id',$company_id)
-                ->groupBy('month')
-                ->orderBy('month','desc')
-                ->get();
+            ->selectRaw('count(reservations.id) total, MONTHNAME(reservations.updated_at) month')
+            ->join('trips', 'reservations.trip_id', 'trips.id')
+            ->where('reservations.seat_status', '2')
+            ->where('company_id', $company_id)
+            ->groupBy('month')
+            ->orderBy('month', 'desc')
+            ->get();
 
         $trips = new Trip();
         $allTrips = $trips->allTrips($company_id);
-        $data = array(
+        $data = [
             'reportData' => $reportData,
-            'allTrips' => $allTrips
-        );
+            'allTrips'   => $allTrips,
+        ];
         // return view('company_admin.sales_report')->with('reportData',$reportData);
         return view('company_admin.sales_report')->with($data);
     }
@@ -290,12 +288,12 @@ class CompanyController extends Controller
     public function allSalesReports()
     {
         $reportData = DB::table('reservations')
-                ->selectRaw('count(id) total, MONTHNAME(updated_at) month')
-                ->where('seat_status','2')
-                ->groupBy('month')
-                ->orderBy('month','desc')
-                ->get();
+            ->selectRaw('count(id) total, MONTHNAME(updated_at) month')
+            ->where('seat_status', '2')
+            ->groupBy('month')
+            ->orderBy('month', 'desc')
+            ->get();
 
-        return view('admin.admin_report')->with('reportData',$reportData);
+        return view('admin.admin_report')->with('reportData', $reportData);
     }
 }

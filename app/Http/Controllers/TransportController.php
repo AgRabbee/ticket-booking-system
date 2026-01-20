@@ -37,7 +37,7 @@ class TransportController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'type' => 'required|string',
+            'type'      => 'required|string',
             'ac/non-ac' => 'required|integer',
         ]);
 
@@ -93,7 +93,7 @@ class TransportController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'type' => 'required|string',
+            'type'    => 'required|string',
             'ac_type' => 'required|integer',
         ]);
         $update_transport = Transport::find($id);

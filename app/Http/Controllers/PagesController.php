@@ -55,7 +55,7 @@ class PagesController extends Controller
             "amount"      => ($request['totalAmount'] + $request['fee']) * 100,
             "currency"    => "usd",
             "source"      => $request->stripeToken,
-            "description" => "Payment from Ticket Booking System."
+            "description" => "Payment from Ticket Booking System.",
         ]);
 
         $stripe_token = $request['stripeToken'];
@@ -116,10 +116,10 @@ class PagesController extends Controller
     {
         $trips_info = new Trip();
 
-        $data = array(
+        $data = [
             'tripsInfo' => $trips_info->allLocations(),
-            'allRoutes' => $trips_info->allRoutes()
-        );
+            'allRoutes' => $trips_info->allRoutes(),
+        ];
         return view('bus.index')->with($data);
     }
 
@@ -156,21 +156,21 @@ class PagesController extends Controller
         $seats = Reservation::where('trip_id', $trip_id)->get();
         // $details = $seats->allocations($trip_id);
 
-        return response()->json(['success' => $seats]);
+        return response()->json([ 'success' => $seats ]);
     }
 
     public function prebooking(Request $request)
     {
         if ($request['seats'] != '') {
             $trip = new Trip();
-            $data = array(
+            $data = [
                 'trip_id'        => $request['trip_id'],
                 'seats'          => $request['seats'],
                 'total'          => $request['total'],
                 'boarding_point' => $request['boarding_point'],
                 'tripDetails'    => $trip->tripDetails($request['trip_id']),
 
-            );
+            ];
             return view('bus.prebooking')->with($data);
         } else {
             session()->flash('type', 'danger');
@@ -210,11 +210,11 @@ class PagesController extends Controller
             'email'   => 'required|string',
         ]);
         // $data = $request->all();
-        $data = array(
+        $data = [
             'subject' => $request['subject'],
             'email'   => $request['email'],
             'msg'     => $request['msg'],
-        );
+        ];
 
         if ($request['email'] != '') {
             \Mail::to($request['email'])->send(new ContactMail($data));
