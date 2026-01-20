@@ -122,7 +122,7 @@
                    </div>
                    <!-- /.tab-pane -->
                    <div class="tab-pane" id="passwrd">
-                       <form class="" action="{{ url('/dashboard/profile/changePassword') }}" method="post">
+                       <form class="" action="{{ url('/dashboard/users/'.Auth::user()->id.'/changePassword') }}" method="post">
                            @csrf
                            <div class="form-group row">
                                <label for="c_password" class="col-md-4 col-form-label text-md-right">{{ __('Current Password') }}</label>
@@ -175,7 +175,7 @@
           <!--edit modal-->
           <div class="modal fade" id="modal-edit" aria-hidden="true" style="display: none;">
            <div class="modal-dialog">
-               <form class="" action="{{ url('/dashboard/profile') }}" method="post">
+               <form class="" action="{{ url('/dashboard/users/'.Auth::user()->id.'/update') }}" method="post">
                    @csrf
                <div class="modal-content">
                    <div class="modal-header">

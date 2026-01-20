@@ -24,11 +24,11 @@
                     @guest
                         <span class="dropdown-item dropdown-header">Sign In / Sign Up</span>
                         <div class="dropdown-divider"></div>
-                        <a href="{{ url('/signin') }}" class="dropdown-item">
+                        <a href="{{ url('/signIn') }}" class="dropdown-item">
                             <i class="fas fa-sign-in-alt mr-2"></i> Sign In
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="{{ url('/signup') }}" class="dropdown-item">
+                        <a href="{{ url('/signUp') }}" class="dropdown-item">
                             <i class="fas fa-user-plus mr-2"></i> Sign Up
                         </a>
                     @else
@@ -51,10 +51,10 @@
 
                         <div class="dropdown-divider"></div>
 
-                        <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                        <a href="{{ route('logOut') }}" class="dropdown-item" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                             <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
                         </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('logOut') }}" method="POST" style="display: none;">
                             {{ csrf_field() }}
                             </form>
                     @endguest

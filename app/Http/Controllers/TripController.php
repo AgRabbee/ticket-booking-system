@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Models\Trip;
 use App\Models\CompanyTransport;
 use App\Models\Reservation;
+use App\Models\Trip;
 use Auth;
+use Illuminate\Http\Request;
 
 class TripController extends Controller
 {
@@ -21,8 +20,14 @@ class TripController extends Controller
         $company_id = Auth::user()->companies[0]->id;
         // $trips = Trip::where('company_id','=',$company_id)->get();
         $trips = new Trip();
-        return view('company_admin.all_trips')->with('trips',$trips->allTrips($company_id));
+        return view('company_admin.all_trips')->with('trips', $trips->allTrips($company_id));
 
+    }
+
+    public function allTrips()
+    {
+        $allTrips = new Trip();
+        return view('admin.allTrips')->with('trips', $allTrips->allTripsForSuperAdmin());
     }
 
     /**
@@ -33,11 +38,11 @@ class TripController extends Controller
     public function create()
     {
         $details = new Trip();
-        $data = array(
+        $data = [
             'locations' => $details->allLocations(),
-            'buses' => $details->allBuses(),
-            'drivers' => $details->allDrivers()
-        );
+            'buses'     => $details->allBuses(),
+            'drivers'   => $details->allDrivers(),
+        ];
 
         return view('company_admin.add_trips')->with($data);
     }
@@ -45,21 +50,21 @@ class TripController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
 
 
-        $this->validate($request,[
-            'date' => 'required|date',
-            'time' => 'required|string',
+        $this->validate($request, [
+            'date'           => 'required|date',
+            'time'           => 'required|string',
             'starting_point' => 'required|integer',
-            'end_point' => 'required|integer',
-            'fare' => 'required|regex:/^[1-9][0-9]+/|not_in:0',
-            'driver_id' => 'required|integer|',
-            'bus_id' => 'required|integer|',
+            'end_point'      => 'required|integer',
+            'fare'           => 'required|regex:/^[1-9][0-9]+/|not_in:0',
+            'driver_id'      => 'required|integer|',
+            'bus_id'         => 'required|integer|',
         ]);
 
         $trip = new Trip;
@@ -76,19 +81,19 @@ class TripController extends Controller
         $company_transport = CompanyTransport::find($request['bus_id']);
 
 
-        for ($i='A'; $i <= 'J' ; $i++) {
-            for ($y=1; $y < 5; $y++) {
-                $seats[] = $i.$y;
+        for ($i = 'A'; $i <= 'J'; $i++) {
+            for ($y = 1; $y < 5; $y++) {
+                $seats[] = $i . $y;
             }
         }
-		//dd($company_transport->total_seats);
-        for ($i=0; $i < $company_transport->total_seats; $i++) {
-            $data2=array(
-                    'seat_number'=>$seats[$i],
-                    'seat_status'=>0,
-                    'trip_id'=>$trip_id
-                );
-        Reservation::insert($data2);
+        //dd($company_transport->total_seats);
+        for ($i = 0; $i < $company_transport->total_seats; $i++) {
+            $data2 = [
+                'seat_number' => $seats[$i],
+                'seat_status' => 0,
+                'trip_id'     => $trip_id,
+            ];
+            Reservation::insert($data2);
         }
 
         return redirect()->back()->withSuccessMessage('Trip Added Successfully');
@@ -99,7 +104,7 @@ class TripController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -110,7 +115,7 @@ class TripController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -121,13 +126,13 @@ class TripController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'update_fare' => 'required|regex:/^[1-9][0-9]+/|not_in:0',
         ]);
         $update_trip = Trip::find($id);
@@ -140,18 +145,11 @@ class TripController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
-    }
-
-
-    public function allTrips()
-    {
-        $allTrips = new Trip();
-        return view('admin.allTrips')->with('trips',$allTrips->allTripsForSuperAdmin());
     }
 }

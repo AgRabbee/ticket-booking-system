@@ -36,14 +36,14 @@
                     <td>
                         @if($value->user_status == '0')
                          <div class="d-flex">
-                              <form action="{{ url('/dashboard/new/user/active') }}" method="POST">
+                              <form action="{{ url('/dashboard/users/active') }}" method="POST">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->id }}">
                                     <button type="submit" class="btn btn-success btn-sm swalDefaultSuccess  mr-2">
                                         <i class="fas fa-check-circle"></i>
                                     </button>
                               </form>
-                              <form action="{{ url('/dashboard/new/user/deny') }}" method="POST">
+                              <form action="{{ url('/dashboard/users/deny') }}" method="POST">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->id }}">
                                     <button type="submit" class="btn btn-danger btn-sm swalDefaultError">
@@ -53,7 +53,7 @@
                           </div>
                       @elseif( $value->user_status == '1')
                           <div class="d-flex">
-                              <form action="{{ url('/dashboard/new/user/pause') }}" method="POST" class="mr-1">
+                              <form action="{{ url('/dashboard/users/pause') }}" method="POST" class="mr-1">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->id }}">
                                   <button type="submit" class="btn btn-warning btn-sm swalDefaultWarning mr-2">
@@ -62,7 +62,7 @@
 
 
                               </form>
-                              <form action="{{ url('/dashboard/new/user/deny') }}" method="POST">
+                              <form action="{{ url('/dashboard/users/deny') }}" method="POST">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->id }}">
                                     <button type="submit" class="btn btn-danger btn-sm swalDefaultError">
@@ -74,7 +74,7 @@
 
                       @elseif( $value->user_status == '2')
                           <div class="d-flex">
-                              <form action="{{ url('/dashboard/new/user/active') }}" method="POST"  class="mr-1">
+                              <form action="{{ url('/dashboard/users/active') }}" method="POST"  class="mr-1">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->id }}">
                                     <button type="submit" class="btn btn-success btn-sm swalDefaultSuccess mr-2">
@@ -139,14 +139,14 @@
                     <td>
                         @if($value->user_status == '0')
                          <div class="d-flex">
-                              <form action="{{ url('/dashboard/new/user/active') }}" method="POST">
+                              <form action="{{ url('/dashboard/users/active') }}" method="POST">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->u_id }}">
                                     <button type="submit" class="btn btn-success btn-sm swalDefaultSuccess  mr-2">
                                         <i class="fas fa-check-circle"></i>
                                     </button>
                               </form>
-                              <form action="{{ url('/dashboard/new/user/deny') }}" method="POST">
+                              <form action="{{ url('/dashboard/users/deny') }}" method="POST">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->u_id }}">
                                     <button type="submit" class="btn btn-danger btn-sm swalDefaultError">
@@ -156,7 +156,7 @@
                           </div>
                       @elseif( $value->user_status == '1')
                           <div class="d-flex">
-                              <form action="{{ url('/dashboard/new/user/pause') }}" method="POST" class="mr-1">
+                              <form action="{{ url('/dashboard/users/pause') }}" method="POST" class="mr-1">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->u_id }}">
                                   <button type="submit" class="btn btn-warning btn-sm swalDefaultWarning mr-2">
@@ -165,7 +165,7 @@
 
 
                               </form>
-                              <form action="{{ url('/dashboard/new/user/deny') }}" method="POST">
+                              <form action="{{ url('/dashboard/users/deny') }}" method="POST">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->u_id }}">
                                     <button type="submit" class="btn btn-danger btn-sm swalDefaultError">
@@ -177,7 +177,7 @@
 
                       @elseif( $value->user_status == '2')
                           <div class="d-flex">
-                              <form action="{{ url('/dashboard/new/user/active') }}" method="POST"  class="mr-1">
+                              <form action="{{ url('/dashboard/users/active') }}" method="POST"  class="mr-1">
                                   {{ csrf_field() }}
                                   <input type="hidden" name="user_id" value="{{ $value->u_id }}">
                                     <button type="submit" class="btn btn-success btn-sm swalDefaultSuccess mr-2">

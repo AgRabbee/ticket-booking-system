@@ -2,62 +2,60 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Role;
-use App\Models\Company;
 
 class AuthController extends Controller
 {
-    // signin section
+    // signIn section
     // ==============================================
-    public function getSignin()
+    public function getSignIn()
     {
-        return view('auth/signin');
+        return view('auth/signIn');
     }
 
-    public function Signin(Request $request)
+    public function signIn(Request $request)
     {
-        if (Auth::attempt(['email' => $request['email'], 'password' => $request['password'],'user_status'=>0])) {
-            session()->flash('type','danger');
-            session()->flash('message','User registration is not accepted yet. Contact with System admin');
+        if (Auth::attempt([ 'email' => $request['email'], 'password' => $request['password'], 'user_status' => 0 ])) {
+            session()->flash('type', 'danger');
+            session()->flash('message', 'User registration is not accepted yet. Contact with System admin');
             return redirect()->back();
-        }elseif (Auth::attempt(['email' => $request['email'], 'password' => $request['password'],'user_status'=>1])) {
+        } elseif (Auth::attempt([ 'email' => $request['email'], 'password' => $request['password'], 'user_status' => 1 ])) {
 
             if (Auth::user()->roles[0]->name == 'Super Admin') {
                 return redirect('/dashboard');
-            }elseif (Auth::user()->roles[0]->name == 'Customer') {
+            } elseif (Auth::user()->roles[0]->name == 'Customer') {
                 return redirect('/');
-            }elseif (Auth::user()->roles[1]->name == 'Admin') {
+            } elseif (Auth::user()->roles[1]->name == 'Admin') {
                 return redirect('/company/dashboard');
             }
         }
-        session()->flash('type','danger');
-        session()->flash('message','Invalid email or password');
+        session()->flash('type', 'danger');
+        session()->flash('message', 'Invalid email or password');
         return redirect()->back();
     }
 
 
 
-    // signup section
+    // signUp section
     // ============================================
 
-    public function getSignup()
+    public function getSignUp()
     {
-        return view('auth/signup');
+        return view('auth/signUp');
     }
 
-    public function Signup(Request $request)
+    public function signUp(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'phone' => 'required|string',
-            'nid' => 'required|integer|max:99999999999',
+            'last_name'  => 'required|string',
+            'email'      => 'required|email|unique:users',
+            'password'   => 'required|string|min:6|confirmed',
+            'phone'      => 'required|string',
+            'nid'        => 'required|integer|max:99999999999',
         ]);
         $user = new User;
         $user->first_name = $request['first_name'];
@@ -70,9 +68,9 @@ class AuthController extends Controller
         $user->save();
         // $user->roles()->attach(Role::where('name','Customer')->first());
         // Auth::login($user);
-        session()->flash('type','success');
-        session()->flash('message','Registration Complete Successfully.');
-        return redirect('/signin');
+        session()->flash('type', 'success');
+        session()->flash('message', 'Registration Complete Successfully.');
+        return redirect('/signIn');
     }
 
     public function logOut(Request $request)

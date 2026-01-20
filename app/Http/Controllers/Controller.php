@@ -14,12 +14,12 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        $this->middleware(function($request,$next){
+        $this->middleware(function ($request, $next) {
             if (session('success_message')) {
                 Alert::success('Success!!', session('success_message'));
-            }elseif (session('info_message')) {
+            } elseif (session('info_message')) {
                 Alert::info('Information', session('info_message'));
-            }elseif (session('error_message')) {
+            } elseif (session('error_message')) {
                 Alert::warning('Error', session('error_message'));
             }
             return $next($request);

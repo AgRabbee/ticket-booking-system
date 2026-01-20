@@ -1,20 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PagesController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\TripController;
-use App\Http\Controllers\TransportController;
-use App\Http\Controllers\CompanyTransportController;
 use App\Http\Controllers\Auth\AuthController;
-
-/*
-|--------------------------------------------------------------------------
-| Auth Routes
-|--------------------------------------------------------------------------
-*/
-//require __DIR__.'/auth.php';
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyTransportController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PagesController;
+use App\Http\Controllers\TransportController;
+use App\Http\Controllers\TripController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,11 +18,11 @@ use App\Http\Controllers\Auth\AuthController;
 Route::get('/', [PagesController::class, 'bus']);
 
 Route::prefix('')->group(function () {
-    Route::get('/signin', [AuthController::class, 'getSignin']);
-    Route::post('/signin', [AuthController::class, 'signin']);
-    Route::get('/signup', [AuthController::class, 'getSignup']);
-    Route::post('/signup', [AuthController::class, 'signup']);
-    Route::post('/logout', [AuthController::class, 'logOut'])->name('logout');
+    Route::get('/signIn', [AuthController::class, 'getSignIn']);
+    Route::post('/signIn', [AuthController::class, 'signIn']);
+    Route::get('/signUp', [AuthController::class, 'getSignUp']);
+    Route::post('/signUp', [AuthController::class, 'signUp']);
+    Route::post('/logOut', [AuthController::class, 'logOut'])->name('logOut');
 
     Route::post('/bus/search', [PagesController::class, 'search']);
     Route::get('/seat_allocations', [PagesController::class, 'seat_allocations']);
@@ -53,20 +47,30 @@ Route::middleware(['auth', 'superAdmin'])
     ->group(function () {
 
         Route::get('/', [DashboardController::class, 'index']);
-
+/*
         Route::prefix('new/user')->group(function () {
-            Route::post('/active', [DashboardController::class, 'user_active']);
-            Route::post('/pause', [DashboardController::class, 'user_pause']);
-            Route::post('/deny', [DashboardController::class, 'user_deny']);
+            Route::post('/active', [DashboardController::class, 'userActive']);
+            Route::post('/pause', [DashboardController::class, 'userPause']);
+            Route::post('/deny', [DashboardController::class, 'userDeny']);
         });
 
         Route::prefix('profile')->group(function () {
-            Route::get('/', [DashboardController::class, 'userProfile']);
+            Route::get('/', [UserController::class, 'profile']);
             Route::post('/', [DashboardController::class, 'updateProfile']);
             Route::post('/changePassword', [DashboardController::class, 'passwordChange']);
         });
 
-        Route::get('/allusers', [DashboardController::class, 'allUser']);
+        Route::get('/users', [UserController::class, 'index']);
+*/
+
+
+        Route::prefix('users')->group(function () {
+            Route::get('/', [UserController::class, 'index']);
+            Route::post('/{status}', [UserController::class, 'updateStatus']);
+            Route::get('/{user}', [UserController::class, 'show']);
+            Route::post('/{user}/update', [UserController::class, 'update']);
+            Route::post('/{user}/changePassword', [UserController::class, 'passwordChange']);
+        });
 
         Route::prefix('new/admins')->group(function () {
             Route::get('/', [CompanyController::class, 'company_admin']);
@@ -120,11 +124,11 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/all/buses', [CompanyTransportController::class, 'allBuses']);
 
-        Route::prefix('admin/profile')->group(function () {
-            Route::get('/', [DashboardController::class, 'userProfile']);
+        /*Route::prefix('admin/profile')->group(function () {
+            Route::get('/', [UserController::class, 'profile']);
             Route::post('/', [DashboardController::class, 'updateProfile']);
             Route::post('/changePassword', [DashboardController::class, 'passwordChange']);
-        });
+        });*/
     });
 
 /*
@@ -139,19 +143,8 @@ Route::middleware(['auth', 'client'])->group(function () {
     Route::get('/member', [PagesController::class, 'memberCheck']);
 
     Route::prefix('profile')->group(function () {
-        Route::get('/', [DashboardController::class, 'userProfile']);
+        Route::get('/', [UserController::class, 'profile']);
         Route::post('/', [DashboardController::class, 'updateProfile']);
         Route::post('/changePassword', [DashboardController::class, 'passwordChange']);
     });
-});
-
-
-Route::get('/__sweet_debug', function () {
-    Alert::success('Debug OK', 'If you see this, SweetAlert works');
-    return view('sweet-debug');
-});
-
-Route::get('/__session_test', function () {
-    session(['test_key' => 'session works']);
-    return session('test_key');
 });
