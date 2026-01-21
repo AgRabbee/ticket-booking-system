@@ -54,7 +54,7 @@
                         <td>
                             @if($value->status == '0')
                              <div class="d-flex">
-                                  <form action="{{ url('/dashboard/new/admins/active') }}" method="POST">
+                                  <form action="{{ url('/dashboard/admins/active') }}" method="POST">
                                       {{ csrf_field() }}
                                       <input type="hidden" name="user_id" value="{{ $value->user_id }}">
                                       <input type="hidden" name="company_id" value="{{ $value->company_id }}">
@@ -62,7 +62,7 @@
                                             <i class="fas fa-check-circle"></i>
                                         </button>
                                   </form>
-                                  <form action="{{ url('/dashboard/new/admins/deny') }}" method="POST">
+                                  <form action="{{ url('/dashboard/admins/deny') }}" method="POST">
                                       {{ csrf_field() }}
                                       <input type="hidden" name="user_id" value="{{ $value->user_id }}">
                                         <input type="hidden" name="company_id" value="{{ $value->company_id }}">
@@ -73,7 +73,7 @@
                               </div>
                               @elseif( $value->status == '1')
                                   <div class="d-flex">
-                                      <form action="{{ url('/dashboard/new/admins/pause') }}" method="POST" class="mr-1">
+                                      <form action="{{ url('/dashboard/admins/pause') }}" method="POST" class="mr-1">
                                           {{ csrf_field() }}
                                           <input type="hidden" name="company_id" value="{{ $value->company_id }}">
                                           <button type="submit" class="btn btn-warning btn-sm swalDefaultWarning mr-2">
@@ -82,7 +82,7 @@
 
 
                                       </form>
-                                      <form action="{{ url('/dashboard/new/admins/deny') }}" method="POST">
+                                      <form action="{{ url('/dashboard/admins/deny') }}" method="POST">
                                           {{ csrf_field() }}
                                           <input type="hidden" name="user_id" value="{{ $value->user_id }}">
                                             <input type="hidden" name="company_id" value="{{ $value->company_id }}">
@@ -95,7 +95,7 @@
 
                               @elseif( $value->status == '2')
                                   <div class="d-flex">
-                                      <form action="{{ url('/dashboard/new/admins/active') }}" method="POST"  class="mr-1">
+                                      <form action="{{ url('/dashboard/admins/active') }}" method="POST"  class="mr-1">
                                           {{ csrf_field() }}
                                           <input type="hidden" name="user_id" value="{{ $value->user_id }}">
                                           <input type="hidden" name="company_id" value="{{ $value->company_id }}">

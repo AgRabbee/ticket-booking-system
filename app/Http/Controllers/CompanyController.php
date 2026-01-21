@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Status;
 use App\Models\Company;
 use App\Models\Reservation;
 use App\Models\Role;
@@ -9,19 +10,42 @@ use App\Models\Trip;
 use App\Models\User;
 use Auth;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CompanyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $c_admins = DB::table('company_user')
+            ->join('users', 'users.id', '=', 'company_user.user_id')
+            ->join('companies', 'companies.id', '=', 'company_user.company_id')
+            ->join('role_user', function ($join) {
+                $join->on('role_user.user_id', '=', 'users.id')
+                    ->where('role_user.role_id', 2);
+            })
+            ->select([
+                'users.id as user_id',
+                'users.first_name',
+                'users.last_name',
+                'users.email',
+                'companies.id as company_id',
+                'companies.company_name',
+                'companies.description',
+                'companies.address',
+                'companies.reg_no',
+                'companies.tin_no',
+                'companies.company_image',
+                'companies.trade',
+                'companies.vat',
+                'company_user.status',
+            ])
+            ->get();
+
+        return view('admin.company_admin', [ 'admin_details' => $c_admins ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -40,12 +64,6 @@ class CompanyController extends Controller
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -123,80 +141,53 @@ class CompanyController extends Controller
         return redirect('/')->withSuccessMessage('Request for Company Registration Submitted Successfully');
     }
 
-
-    public function company_admin()
+    public function updateStatus(Request $request, $status)
     {
-        $c_admins = DB::table('company_user')
-            ->join('users', 'users.id', '=', 'company_user.user_id')
-            ->join('companies', 'companies.id', '=', 'company_user.company_id')
-            ->join('role_user', 'users.id', 'role_user.user_id')
-            ->where('role_user.role_id', '2')
-            ->orWhere('company_user.status', '0')
-            ->get();
+        $statusEnum = Status::fromRoute($status);
 
-        return view('admin.company_admin')->with('admin_details', $c_admins);
-    }
-
-    public function company_admin_active(Request $request)
-    {
-        $company_id = $request['company_id'];
-        $company = Company::where('id', $company_id)->get();
-
-        foreach ($company as $value) {
-            $value->users[0]->pivot->status = 1;
-            $value->users[0]->pivot->save();
+        if (!$statusEnum) {
+            abort(404, 'Invalid status');
         }
 
-        $company = Company::find($company_id);
-        $company->company_status = 1;
-        $company->save();
+        try {
+            $company = Company::with('users')->findOrFail($request->company_id);
 
-        $adminRole = Role::where('name', 'Admin')->first();
-        $u_id = $request['user_id'];
-        $admin = User::find($u_id);
-        $admin->roles()->attach($adminRole);
+            // Update pivot status
+            $company->users->first()?->pivot->update([
+                'status' => $statusEnum->value,
+            ]);
 
-        return redirect('/dashboard/new/admins')->withSuccessMessage('Successfully Activated');
-    }
+            // Update company status
+            $company->update([
+                'company_status' => $statusEnum->value,
+            ]);
 
-    public function company_admin_pause(Request $request)
-    {
-        $company_id = $request['company_id'];
-        $company = Company::where('id', $company_id)->get();
+            $adminRole = Role::where('name', 'Admin')->first();
+            $admin = User::find($request->user_id);
 
-        foreach ($company as $value) {
-            $value->users[0]->pivot->status = 0;
-            $value->users[0]->pivot->save();
+            if ($admin && $adminRole) {
+                match ($statusEnum) {
+                    Status::ACTIVE =>
+                    $admin->roles()->syncWithoutDetaching([ $adminRole->id ]),
+
+                    Status::DENIED =>
+                    $admin->roles()->detach($adminRole->id),
+
+                    default        => null,
+                };
+            }
+
+            return redirect('/dashboard/admins')->withSuccessMessage('Successfully ' . $status);
+        } catch (Exception $e) {
+            Log::error('Failed to update company status', [
+                'status'     => $status,
+                'company_id' => $request->company_id,
+                'user_id'    => $request->user_id,
+                'error'      => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->withErrors([ 'error' => 'Unable to update status. Please try again.' ]);
         }
-
-        $company = Company::find($company_id);
-        $company->company_status = 0;
-        $company->save();
-
-        return redirect('/dashboard/new/admins')->withSuccessMessage('Successfully Paused');
-    }
-
-    public function company_admin_deny(Request $request)
-    {
-        $company_id = $request['company_id'];
-        $company = Company::where('id', $company_id)->get();
-
-        foreach ($company as $value) {
-            $value->users[0]->pivot->status = 2;
-            $value->users[0]->pivot->save();
-        }
-
-
-        $company = Company::find($company_id);
-        $company->company_status = 2;
-        $company->save();
-
-        $adminRole = Role::where('name', 'Admin')->first();
-        $u_id = $request['user_id'];
-        $admin = User::find($u_id);
-        $admin->roles()->detach($adminRole);
-
-        return redirect('/dashboard/new/admins')->withSuccessMessage('Successfully Denied');
     }
 
     public function company_admin_panel()
@@ -211,11 +202,11 @@ class CompanyController extends Controller
 
     }
 
-
     public function allDrivers()
     {
         $company_id = Auth::user()->companies[0]->id;
         $driver_details = new Company;
+
         return view('company_admin.all_drivers')->with('driver_details', $driver_details->allDrivers($company_id));
     }
 
@@ -259,6 +250,7 @@ class CompanyController extends Controller
     {
         $company_id = Auth::user()->companies[0]->id;
         $salesDetails = new Reservation();
+
         return view('company_admin.all_sales')->with('salesDetails', $salesDetails->allSales($company_id));
     }
 
@@ -281,6 +273,7 @@ class CompanyController extends Controller
             'reportData' => $reportData,
             'allTrips'   => $allTrips,
         ];
+
         // return view('company_admin.sales_report')->with('reportData',$reportData);
         return view('company_admin.sales_report')->with($data);
     }
