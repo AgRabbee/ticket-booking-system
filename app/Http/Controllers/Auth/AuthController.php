@@ -29,7 +29,7 @@ class AuthController extends Controller
             } elseif (Auth::user()->roles[0]->name == 'Customer') {
                 return redirect('/');
             } elseif (Auth::user()->roles[1]->name == 'Admin') {
-                return redirect('/company/dashboard');
+                return redirect('/dashboard');
             }
         }
         session()->flash('type', 'danger');

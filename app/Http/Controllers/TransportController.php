@@ -8,32 +8,16 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class TransportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         return view('admin.allTransports')->with('transports', Transport::latest()->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('admin.addTransports');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -57,39 +41,21 @@ class TransportController extends Controller
             }
         } else {
             $transport->save();
+
             return redirect()->back()->withSuccessMessage('Transport Added Successfully');
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\Models\Transport $transport
-     * @return \Illuminate\Http\Response
-     */
     public function show(Transport $transport)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Transport $transport
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Transport $transport)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Transport $transport
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function update(Request $request, $id)
     {
         $this->validate($request, [
@@ -114,17 +80,11 @@ class TransportController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Transport $transport
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $delete_transport = Transport::find($id);
         $delete_transport->delete();
+
         return redirect()->back()->withSuccessMessage('Transport Deleted Successfully');
     }
-
 }

@@ -67,10 +67,9 @@ class UserController extends Controller
             return view('admin.adminProfile');
         } elseif (Auth::user()->roles[1]->name == 'Admin') {
             return view('company_admin.adminProfile');
+        } elseif (Auth::user()->roles[0]->name == 'Customer') {
+            return view('customer.customerProfile');
         }
-        // elseif (Auth::user()->roles[0]->name == 'Customer') {
-        //     return view('customer.customerProfile');
-        // }
     }
 
     public function update(UpdateUserRequest $request)

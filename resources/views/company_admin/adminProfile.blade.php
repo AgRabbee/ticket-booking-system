@@ -122,7 +122,7 @@
                    </div>
                    <!-- /.tab-pane -->
                    <div class="tab-pane" id="passwrd">
-                       <form class="" action="{{ url('/company/admin/profile/changePassword') }}" method="post">
+                       <form class="" action="{{ url('/dashboard/users/'.Auth::user()->id.'/changePassword') }}" method="post">
                            @csrf
                            <div class="form-group row">
                                <label for="c_password" class="col-md-4 col-form-label text-md-right">{{ __('Current Password') }}</label>
@@ -175,7 +175,7 @@
           <!--edit modal-->
           <div class="modal fade" id="modal-edit" aria-hidden="true" style="display: none;">
            <div class="modal-dialog">
-               <form class="" action="{{ url('/company/admin/profile') }}" method="post">
+               <form class="" action="{{ url('/dashboard/users/'.Auth::user()->id.'/update') }}" method="post">
                    @csrf
                <div class="modal-content">
                    <div class="modal-header">
@@ -220,34 +220,18 @@
           <!-- /.modal-dialog -->
           </div>
           <!--modal-->
-
-
-
-
-
-
-
-
-
-
-
 @endsection
 
 
 
 @section('admin_css')
-
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-bs4/css/dataTables.bootstrap4.css')}}">
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-responsive/css/jquery.dataTables.min.css')}}">
-
-
 @endsection
 
-
 @section('admin_scripts')
-
     <!-- DataTables -->
     <script src="{{ asset('AdminLTE/plugins/datatables/jquery.dataTables.js')}}"></script>
     <script src="{{ asset('AdminLTE/plugins/datatables-bs4/js/dataTables.bootstrap4.js')}}"></script>
@@ -268,5 +252,4 @@
     });
   });
 </script>
-
 @endsection

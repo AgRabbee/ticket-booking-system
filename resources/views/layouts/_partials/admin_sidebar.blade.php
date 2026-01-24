@@ -66,7 +66,7 @@
                       </a>
                       <ul class="nav nav-treeview">
                           <li class="nav-item">
-                              <a href="/dashboard/new/admins" class="nav-link">
+                              <a href="/dashboard/admins" class="nav-link">
                                   <i class="far fa-circle nav-icon"></i>
                                   <p>Company Admins</p>
                               </a>

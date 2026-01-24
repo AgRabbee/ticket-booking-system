@@ -11,6 +11,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @method static create(array $array)
+ * @method static find(int $userId)
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -22,6 +26,7 @@ class User extends Authenticatable
         'phone',
         'nid',
         'user_status',
+        'password',
     ];
 
     protected $hidden = [
