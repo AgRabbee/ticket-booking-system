@@ -53,9 +53,6 @@ Route::middleware([ 'auth', 'superAdmin' ])
         Route::prefix('users')->group(function () {
             Route::get('/', [ UserController::class, 'index' ]);
             Route::post('/{status}', [ UserController::class, 'updateStatus' ]);
-            Route::get('/{user}', [ UserController::class, 'show' ]);
-            Route::post('/{user}/update', [ UserController::class, 'update' ]);
-            Route::post('/{user}/changePassword', [ UserController::class, 'passwordChange' ]);
         });
 
         Route::prefix('admins')->group(function () {
@@ -89,7 +86,6 @@ Route::middleware([ 'auth', 'admin' ])
         Route::get('/dashboard', [ DashboardController::class, 'companyAdmin' ]);
 
         Route::prefix('dashboard')->group(function () {
-
             Route::get('/all/trips', [ TripController::class, 'index' ]);
             Route::get('/add/trip', [ TripController::class, 'create' ]);
             Route::post('/add/trip', [ TripController::class, 'store' ]);
@@ -107,28 +103,22 @@ Route::middleware([ 'auth', 'admin' ])
         Route::post('/add/transport', [ CompanyTransportController::class, 'store' ]);
 
         Route::get('/all/buses', [ CompanyTransportController::class, 'allBuses' ]);
-
-        /*Route::prefix('admin/profile')->group(function () {
-            Route::get('/', [UserController::class, 'profile']);
-            Route::post('/', [DashboardController::class, 'updateProfile']);
-            Route::post('/changePassword', [DashboardController::class, 'passwordChange']);
-        });*/
     });
 
+
+Route::middleware([ 'auth' ])
+    ->prefix('dashboard/users')
+    ->group(function () {
+        Route::get('/{user}', [ UserController::class, 'show' ]);
+        Route::post('/{user}/update', [ UserController::class, 'update' ]);
+        Route::post('/{user}/changePassword', [ UserController::class, 'passwordChange' ]);
+    });
 /*
 |--------------------------------------------------------------------------
 | Client Routes
 |--------------------------------------------------------------------------
 */
 Route::middleware([ 'auth', 'client' ])->group(function () {
-
     Route::post('/company/register', [ CompanyController::class, 'store' ]);
-
     Route::get('/member', [ PagesController::class, 'memberCheck' ]);
-
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ UserController::class, 'profile' ]);
-        Route::post('/', [ DashboardController::class, 'updateProfile' ]);
-        Route::post('/changePassword', [ DashboardController::class, 'passwordChange' ]);
-    });
 });

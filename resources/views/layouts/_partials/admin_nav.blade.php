@@ -24,10 +24,11 @@
                       <i class="fas fa-address-card mr-2"></i> Profile
                     </a>
                 @elseif (Auth::user()->roles[1]->name == 'Admin')
-                    <a href="{{ url('/company/admin/profile') }}" class="dropdown-item">
+                    <a href="{{ url('/company/dashboard/users/'. Auth::user()->id) }}" class="dropdown-item">
                       <i class="fas fa-address-card mr-2"></i> Profile
                     </a>
                 @endif--}}
+
                 <a href="{{ url('/dashboard/users/'. Auth::user()->id) }}" class="dropdown-item">
                     <i class="fas fa-address-card mr-2"></i> Profile
                 </a>
