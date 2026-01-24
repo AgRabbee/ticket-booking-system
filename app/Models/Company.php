@@ -6,6 +6,9 @@ use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @method static create(array $data)
+ */
 class Company extends Model
 {
     protected $fillable = [

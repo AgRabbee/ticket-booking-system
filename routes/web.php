@@ -4,7 +4,9 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyTransportController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransportController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\UserController;
@@ -72,7 +74,7 @@ Route::middleware([ 'auth', 'superAdmin' ])
         Route::post('/edit/{id}/transport', [ TransportController::class, 'update' ]);
         Route::post('/delete/{id}/transport', [ TransportController::class, 'destroy' ]);
 
-        Route::get('/sales/reports', [ CompanyController::class, 'allSalesReports' ]);
+        Route::get('/sales/reports', [ ReportController::class, 'allSalesReports' ]);
     });
 
 /*
@@ -93,12 +95,12 @@ Route::middleware([ 'auth', 'admin' ])
             Route::post('/add/trip', [ TripController::class, 'store' ]);
             Route::post('/edit/{id}/trip', [ TripController::class, 'update' ]);
 
-            Route::get('/all/drivers', [ CompanyController::class, 'allDrivers' ]);
-            Route::get('/add/driver', [ CompanyController::class, 'addDriverForm' ]);
-            Route::post('/add/driver', [ CompanyController::class, 'addDriver' ]);
+            Route::get('/all/drivers', [ DriverController::class, 'index' ]);
+            Route::get('/add/driver', [ DriverController::class, 'create' ]);
+            Route::post('/add/driver', [ DriverController::class, 'store' ]);
 
-            Route::get('/all/sales', [ CompanyController::class, 'allSales' ]);
-            Route::get('/sales/reports', [ CompanyController::class, 'salesReports' ]);
+            Route::get('/all/sales', [ ReportController::class, 'allSales' ]);
+            Route::get('/sales/reports', [ ReportController::class, 'salesReports' ]);
         });
 
         Route::get('/add/transport', [ CompanyTransportController::class, 'create' ]);

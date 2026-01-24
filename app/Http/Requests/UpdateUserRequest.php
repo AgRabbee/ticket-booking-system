@@ -16,9 +16,6 @@ class UpdateUserRequest extends FormRequest
         ];
     }
 
-    /**
-     * Custom validation error messages.
-     */
     public function messages(): array
     {
         return [

@@ -22,6 +22,7 @@ class Controller extends BaseController
             } elseif (session('error_message')) {
                 Alert::warning('Error', session('error_message'));
             }
+
             return $next($request);
         });
     }
