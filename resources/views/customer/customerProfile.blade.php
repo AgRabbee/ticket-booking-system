@@ -15,7 +15,7 @@
             <div class="card card-info card-outline">
               <div class="card-body box-profile">
                 <div class="text-center">
-                  <img class="profile-user-img img-fluid img-circle" src="{{ asset('AdminLTE/dist/img/user2-160x160.jpg')}}" alt="User profile picture">
+                  <img class="profile-user-img img-fluid img-circle" src="{{ asset('images/user2-160x160.jpg')}}" alt="User profile picture">
                 </div>
 
                 <h3 class="profile-username text-center">{{Auth::user()->first_name. ' ' . Auth::user()->last_name}}</h3>

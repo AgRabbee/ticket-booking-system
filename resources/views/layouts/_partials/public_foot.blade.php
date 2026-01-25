@@ -6,27 +6,24 @@
 
 
 <!-- jQuery -->
-<script src="{{ asset('AdminLTE/plugins/jquery/jquery.min.js')}}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="{{ asset('AdminLTE/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
 <!-- Bootstrap 4 -->
-<script src="{{ asset('AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-<!-- daterangepicker -->
-<script src="{{ asset('AdminLTE/plugins/moment/moment.min.js')}}"></script>
-{{-- <script src="{{ asset('AdminLTE/plugins/daterangepicker/daterangepicker.js')}}"></script>  --}}
+<script src="//cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <!-- select2 -->
-<script src="{{ asset('AdminLTE/plugins/select2/js/select2.full.min.js')}}"></script>
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.full.min.js"></script>
 <!-- Tempusdominus Bootstrap 4 -->
-<script src="{{ asset('AdminLTE/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"></script>
 <!-- overlayScrollbars -->
-<script src="{{ asset('AdminLTE/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.9.1/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
-<script src="{{ asset('AdminLTE/dist/js/adminlte.js')}}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/admin-lte/3.0.0-rc.1/js/adminlte.js"></script>
 @yield('public_scripts')
 <script>
     $(function () {
