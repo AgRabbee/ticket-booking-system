@@ -1,66 +1,184 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎟️ Ticket Booking System (TBS)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern **Bus Ticket Booking System** built with **Laravel 10** and **AdminLTE**, designed to manage bus trips, seat reservations, payments, and multi-level administration efficiently.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Project Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The **Ticket Booking System (TBS)** is a role-based web application that allows customers to search and book bus tickets online, while enabling transport companies and system administrators to manage trips, vehicles, users, and sales reports through powerful dashboards.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The system supports **three main roles**:
 
-## Learning Laravel
+* **Customer**
+* **Company Admin**
+* **System Admin**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+It also allows **new companies** to request registration into the system.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Tech Stack
 
-## Laravel Sponsors
+* **Framework:** Laravel 10
+* **Frontend Admin Panel:** AdminLTE
+* **Database:** MySQL (or compatible)
+* **Payment Gateway:** Stripe
+* **Authentication:** Laravel Auth
+* **Reporting:** Monthly Sales Reports
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 👥 User Roles & Features
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 🧑‍💼 Customer
 
-## Contributing
+Customers can:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Search available buses by **route** and **travel date**
+* View real-time **seat availability layout**
+* Select preferred seats
+* Make secure payments using **Stripe**
+* Download or **print tickets** after successful payment
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🏢 Company Admin
 
-## Security Vulnerabilities
+Company administrators can manage their own transport operations:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Dashboard**
 
-## License
+* View company-specific data summary at a glance
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Trip Management**
+
+* View all trips as a list
+* Update trip fares
+* Add new trips
+
+**Transport Management**
+
+* View all available transports
+* Add new transport vehicles
+
+**Driver Management**
+
+* Add users as drivers
+* View all drivers under the company
+
+**Sales & Reports**
+
+* View all sales data
+* Generate **monthly sales reports** (company-specific)
+
+**Profile Management**
+
+* View and update profile information
+* Change password securely
+
+---
+
+### 🛡️ System Admin
+
+System administrators have full system-level control:
+
+**Dashboard**
+
+* View overall system summary
+
+**User Management**
+
+* View all company users
+* View all customers
+* Update user status (active / inactive)
+
+**Trip & Transport Management**
+
+* View all trips in the system
+* View all transports
+* Add new transports globally
+
+**Sales Reports**
+
+* View **monthly sales reports** for the entire system
+
+**Profile Management**
+
+* View and update own profile
+* Change password
+
+---
+
+### 📝 Company Registration Request
+
+* Any user can submit a request to **register a new company** in the system
+* Requests can be reviewed and managed by the system admin
+
+---
+
+## 🔐 Authentication & Authorization
+
+* Role-based access control (Customer, Company Admin, System Admin)
+* Secure login and password management
+* Restricted access based on user roles
+
+---
+
+## 💳 Payment Integration
+
+* Integrated with **Stripe Payment Gateway**
+* Secure ticket purchase process
+* Ticket generation only after successful payment
+
+---
+
+## 📊 Reports & Analytics
+
+* Company-wise monthly sales reports
+* System-wide monthly sales analytics
+* Sales data available in list and report formats
+
+---
+
+## ⚙️ Installation Guide
+
+```bash
+# Clone the repository
+git clone https://github.com/AgRabbee/tbs.git
+
+# Navigate to project directory
+cd tbs
+
+# Run the project using Docker
+docker compose up -d --build
+
+# Browse project in browser with port 8080
+http://localhost:8080
+
+# To enter to the container
+docker exec -it tbs_app bash
+
+# Install dependencies
+composer install
+
+# Run migrations
+php artisan migrate
+```
+
+## 🤝 Contribution
+
+Contributions, issues, and feature requests are welcome!
+
+---
+
+## 📄 License
+
+This project is open-source and available under the **MIT License**.
+
+---
+
+## ✨ Author
+
+Developed by [Md Abdul Goni Rabbee](https://www.linkedin.com/in/abdul-goni-rabbee/).
+
