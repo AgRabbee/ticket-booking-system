@@ -5,8 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @method static where(string $string, string $seat)
+ */
 class Reservation extends Model
 {
+    protected $fillable = [
+        'payment_id',
+        'seat_number',
+        'seat_status',
+        'trip_id',
+    ];
+
     // public function allocations($trip_id)
     // {
     //     $allocation = DB::table('reservations')
@@ -22,11 +32,11 @@ class Reservation extends Model
     public function allocations($trip_id)
     {
         $details = DB::table('reservations')
-                    ->selectRaw('reservations.*')
-                    ->join('payment_details','reservations.payment_id','payment_details.id')
-                    ->join('trips','reservations.trip_id','trips.id')
-                    ->where('reservations.trip_id',$trip_id)
-                    ->get();
+            ->selectRaw('reservations.*')
+            ->join('payment_details', 'reservations.payment_id', 'payment_details.id')
+            ->join('trips', 'reservations.trip_id', 'trips.id')
+            ->where('reservations.trip_id', $trip_id)
+            ->get();
 
         return $details;
     }
@@ -37,15 +47,16 @@ class Reservation extends Model
 
 
         $details = DB::table('reservations')
-                    ->selectRaw('users.first_name, users.last_name, users.phone, users.email, companies.company_name, reservations.seat_number, reservations.seat_status, payment_details.id, payment_details.payment_status, payment_details.created_at, trips.date, trips.start_time, s.name as startPoint, e.name as endPoint, trips.fare')
-                    ->join('payment_details','reservations.payment_id','payment_details.id')
-                    ->join('users','payment_details.user_id','users.id')
-                    ->join('trips','reservations.trip_id','trips.id')
-                    ->join('companies','trips.company_id','companies.id')
-                    ->join('districts as s','s.id','=','trips.start_point')
-                    ->join('districts as e','e.id','=','trips.end_point')
-                    ->where('reservations.payment_id',$paymentID)
-                    ->get();
+            ->selectRaw('users.first_name, users.last_name, users.phone, users.email, companies.company_name, reservations.seat_number, reservations.seat_status, payment_details.id, payment_details.payment_status, payment_details.created_at, trips.date, trips.start_time, s.name as startPoint, e.name as endPoint, trips.fare')
+            ->join('payment_details', 'reservations.payment_id', 'payment_details.id')
+            ->join('users', 'payment_details.user_id', 'users.id')
+            ->join('trips', 'reservations.trip_id', 'trips.id')
+            ->join('companies', 'trips.company_id', 'companies.id')
+            ->join('districts as s', 's.id', '=', 'trips.start_point')
+            ->join('districts as e', 'e.id', '=', 'trips.end_point')
+            ->where('reservations.payment_id', $paymentID)
+            ->get();
+
         return $details;
     }
 
@@ -62,17 +73,16 @@ class Reservation extends Model
 
 
         $details = DB::table('reservations')
-                    ->selectRaw('payment_details.id as pId, payment_details.stripe_token, users.first_name, users.last_name, reservations.seat_number, trips.date, trips.start_time, trips.bus_id, s.name as startPoint, e.name as endPoint, trips.fare')
-                    ->join('payment_details','reservations.payment_id','payment_details.id')
-                    ->join('users','payment_details.user_id','users.id')
-                    ->join('trips','reservations.trip_id','trips.id')
-                    ->join('companies','trips.company_id','companies.id')
-                    ->join('districts as s','s.id','=','trips.start_point')
-                    ->join('districts as e','e.id','=','trips.end_point')
-                    ->where('companies.id',$company_id)
-                    ->get();
+            ->selectRaw('payment_details.id as pId, payment_details.stripe_token, users.first_name, users.last_name, reservations.seat_number, trips.date, trips.start_time, trips.bus_id, s.name as startPoint, e.name as endPoint, trips.fare')
+            ->join('payment_details', 'reservations.payment_id', 'payment_details.id')
+            ->join('users', 'payment_details.user_id', 'users.id')
+            ->join('trips', 'reservations.trip_id', 'trips.id')
+            ->join('companies', 'trips.company_id', 'companies.id')
+            ->join('districts as s', 's.id', '=', 'trips.start_point')
+            ->join('districts as e', 'e.id', '=', 'trips.end_point')
+            ->where('companies.id', $company_id)
+            ->get();
+
         return $details;
-
-
     }
 }
