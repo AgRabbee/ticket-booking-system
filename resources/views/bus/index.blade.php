@@ -111,7 +111,7 @@
             @if (count($allRoutes)>0)
                 <ul>
                     @foreach ($allRoutes as $value)
-                        <li>{{ $value->start_name . ' - ' . $value->end_name}}</li>
+                        <li>{{ $value->start_name . ' - ' . $value->end_name . ' [ '. $value->date . ' ] '}}</li>
                     @endforeach
 
                 </ul>
