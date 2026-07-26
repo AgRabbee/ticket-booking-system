@@ -1,184 +1,109 @@
-# 🎟️ Ticket Booking System (TBS)
+# Ticket Booking System
 
-A modern **Bus Ticket Booking System** built with **Laravel 10** and **AdminLTE**, designed to manage bus trips, seat reservations, payments, and multi-level administration efficiently.
+A bus ticket booking web application built with Laravel. It allows customers to search bus trips, select seats, and pay online, while company administrators and system administrators manage trips, transports, drivers, and sales reports through separate dashboards.
 
----
+## Key Features
 
-## 🚀 Project Overview
+- Search bus trips by route and travel date
+- View seat availability and select seats for a trip
+- Complete payment for a booking via Stripe
+- Receive a booking confirmation email after payment
+- Print a ticket or invoice after a successful booking
+- Submit a contact/enquiry message to the admin
+- Request registration of a new transport company
+- Role-based access for three user types: customer, company admin, and system admin
+- Company admin: manage trips (create, update fares), manage transports, manage drivers, view company sales and monthly sales reports
+- System admin: manage users (view, update status), manage companies, manage transports system-wide, view system-wide sales reports
+- Update profile information and change password (all authenticated users)
 
-The **Ticket Booking System (TBS)** is a role-based web application that allows customers to search and book bus tickets online, while enabling transport companies and system administrators to manage trips, vehicles, users, and sales reports through powerful dashboards.
+## Tech Stack
 
-The system supports **three main roles**:
+- **Backend**: Laravel 10 (PHP ^8.1)
+- **Database**: MySQL
+- **Payments**: Stripe (`stripe/stripe-php`)
+- **Auth/API**: Laravel Sanctum
+- **HTTP client**: Guzzle
+- **Alerts**: SweetAlert for Laravel (`realrashid/sweet-alert`)
+- **Admin panel UI**: AdminLTE 3 (loaded via CDN, not a package dependency)
+- **Frontend build tooling**: Vite 5, `laravel-vite-plugin`, Axios
+- **Testing**: PHPUnit 10, Faker, Mockery
+- **Code style**: Laravel Pint
+- **Local development**: Laravel Sail, Docker (custom `Dockerfile` and `docker-compose.yml` with app, nginx, and MySQL services)
 
-* **Customer**
-* **Company Admin**
-* **System Admin**
+## Screenshots
 
-It also allows **new companies** to request registration into the system.
+<!-- Add screenshots here, for example:
+![Home page](docs/screenshots/home.png)
+![Seat selection](docs/screenshots/seat-selection.png)
+![Admin dashboard](docs/screenshots/admin-dashboard.png)
+-->
 
----
+## Installation and Setup
 
-## 🛠️ Tech Stack
+### Requirements
 
-* **Framework:** Laravel 10
-* **Frontend Admin Panel:** AdminLTE
-* **Database:** MySQL (or compatible)
-* **Payment Gateway:** Stripe
-* **Authentication:** Laravel Auth
-* **Reporting:** Monthly Sales Reports
+- PHP 8.1 or higher
+- Composer
+- MySQL
+- Node.js and npm (for building frontend assets)
 
----
+### Steps
 
-## 👥 User Roles & Features
+1. Clone the repository:
 
-### 🧑‍💼 Customer
+   ```bash
+   git clone https://github.com/AgRabbee/ticket-booking-system.git
+   cd ticket-booking-system
+   ```
 
-Customers can:
+2. Install PHP dependencies:
 
-* Search available buses by **route** and **travel date**
-* View real-time **seat availability layout**
-* Select preferred seats
-* Make secure payments using **Stripe**
-* Download or **print tickets** after successful payment
+   ```bash
+   composer install
+   ```
 
----
+3. Copy the environment file and generate an application key:
 
-### 🏢 Company Admin
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-Company administrators can manage their own transport operations:
+4. Set the database connection details and Stripe keys in `.env`.
 
-**Dashboard**
+5. Run the database migrations:
 
-* View company-specific data summary at a glance
+   ```bash
+   php artisan migrate
+   ```
 
-**Trip Management**
+6. Install frontend dependencies and build assets:
 
-* View all trips as a list
-* Update trip fares
-* Add new trips
+   ```bash
+   npm install
+   npm run build
+   ```
 
-**Transport Management**
+7. Start the local development server:
 
-* View all available transports
-* Add new transport vehicles
+   ```bash
+   php artisan serve
+   ```
 
-**Driver Management**
+   The application will be available at `http://localhost:8000`.
 
-* Add users as drivers
-* View all drivers under the company
-
-**Sales & Reports**
-
-* View all sales data
-* Generate **monthly sales reports** (company-specific)
-
-**Profile Management**
-
-* View and update profile information
-* Change password securely
-
----
-
-### 🛡️ System Admin
-
-System administrators have full system-level control:
-
-**Dashboard**
-
-* View overall system summary
-
-**User Management**
-
-* View all company users
-* View all customers
-* Update user status (active / inactive)
-
-**Trip & Transport Management**
-
-* View all trips in the system
-* View all transports
-* Add new transports globally
-
-**Sales Reports**
-
-* View **monthly sales reports** for the entire system
-
-**Profile Management**
-
-* View and update own profile
-* Change password
-
----
-
-### 📝 Company Registration Request
-
-* Any user can submit a request to **register a new company** in the system
-* Requests can be reviewed and managed by the system admin
-
----
-
-## 🔐 Authentication & Authorization
-
-* Role-based access control (Customer, Company Admin, System Admin)
-* Secure login and password management
-* Restricted access based on user roles
-
----
-
-## 💳 Payment Integration
-
-* Integrated with **Stripe Payment Gateway**
-* Secure ticket purchase process
-* Ticket generation only after successful payment
-
----
-
-## 📊 Reports & Analytics
-
-* Company-wise monthly sales reports
-* System-wide monthly sales analytics
-* Sales data available in list and report formats
-
----
-
-## ⚙️ Installation Guide
+### Running with Docker (alternative)
 
 ```bash
-# Clone the repository
-git clone https://github.com/AgRabbee/tbs.git
-
-# Navigate to project directory
-cd tbs
-
-# Run the project using Docker
 docker compose up -d --build
-
-# Browse project in browser with port 8080
-http://localhost:8080
-
-# To enter to the container
-docker exec -it tbs_app bash
-
-# Install dependencies
-composer install
-
-# Run migrations
-php artisan migrate
 ```
 
-## 🤝 Contribution
+The application will be available at `http://localhost:8080`.
 
-Contributions, issues, and feature requests are welcome!
+## Project Background
 
----
+This project was originally built as a BSc final year project.
 
-## 📄 License
+## Licence
 
-This project is open-source and available under the **MIT License**.
-
----
-
-## ✨ Author
-
-Developed by [Md Abdul Goni Rabbee](https://www.linkedin.com/in/abdul-goni-rabbee/).
-
+This project is open-source and available under the MIT Licence.
