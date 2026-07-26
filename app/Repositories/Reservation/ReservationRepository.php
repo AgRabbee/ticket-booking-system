@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Reservation;
 
+use App\Models\Reservation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -27,6 +28,18 @@ class ReservationRepository
             ->groupBy('month')
             ->orderBy('month', 'desc')
             ->get();
+    }
+
+    public function getBySeatAndTrip(string $seat, int $tripId): ?Reservation
+    {
+        return Reservation::where('seat_number', $seat)
+            ->where('trip_id', $tripId)
+            ->first();
+    }
+
+    public function getByTrip(int $tripId)
+    {
+        return Reservation::where('trip_id', $tripId)->get();
     }
 }
 

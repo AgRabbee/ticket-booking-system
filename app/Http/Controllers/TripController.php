@@ -5,37 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\CompanyTransport;
 use App\Models\Reservation;
 use App\Models\Trip;
+use App\Services\TripService;
 use Auth;
 use Illuminate\Http\Request;
 
 class TripController extends Controller
 {
+    public function __construct(private readonly TripService $tripService)
+    {
+        Parent::__construct();
+    }
+
     public function index()
     {
-        $company_id = Auth::user()->companies[0]->id;
-        // $trips = Trip::where('company_id','=',$company_id)->get();
-        $trips = new Trip();
-
-        return view('company_admin.all_trips')->with('trips', $trips->allTrips($company_id));
+        return view('company_admin.all_trips')->with('trips', $this->tripService->allTrips(Auth::user()->companies[0]->id));
     }
 
     public function allTrips()
     {
-        $allTrips = new Trip();
-
-        return view('admin.allTrips')->with('trips', $allTrips->allTripsForSuperAdmin());
+        return view('admin.allTrips')->with('trips', $this->tripService->allTripsForSuperAdmin());
     }
 
     public function create()
     {
-        $details = new Trip();
-        $data = [
-            'locations' => $details->allLocations(),
-            'buses'     => $details->allBuses(),
-            'drivers'   => $details->allDrivers(),
-        ];
-
-        return view('company_admin.add_trips')->with($data);
+        return view('company_admin.add_trips')->with([
+            'locations' => $this->tripService->allLocations(),
+            'buses'     => $this->tripService->allBuses(),
+            'drivers'   => $this->tripService->allDrivers(),
+        ]);
     }
 
     public function store(Request $request)
@@ -69,7 +66,7 @@ class TripController extends Controller
                 $seats[] = $i . $y;
             }
         }
-        //dd($company_transport->total_seats);
+
         for ($i = 0; $i < $company_transport->total_seats; $i++) {
             $data2 = [
                 'seat_number' => $seats[$i],
@@ -82,16 +79,6 @@ class TripController extends Controller
         return redirect()->back()->withSuccessMessage('Trip Added Successfully');
     }
 
-    public function show($id)
-    {
-        //
-    }
-
-    public function edit($id)
-    {
-        //
-    }
-
     public function update(Request $request, $id)
     {
         $this->validate($request, [
@@ -102,10 +89,5 @@ class TripController extends Controller
         $update_trip->save();
 
         return redirect()->back()->withSuccessMessage('Trips Fare updated Successfully..');
-    }
-
-    public function destroy($id)
-    {
-        //
     }
 }
