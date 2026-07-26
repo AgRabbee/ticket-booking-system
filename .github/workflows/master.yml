@@ -8,13 +8,21 @@ jobs:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v3
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3
 
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ftp.rabbee.com
-        username: ${{ secrets.TBS_FTP_USERNAME }}
-        password: ${{ secrets.TBS_FTP_PASSWORD }}
-        server-dir: /tbs.rabbee.com/
+      - name: 📦 Prepare deploy folder
+        run: |
+          mkdir deploy
+          rsync -av --exclude='.git' --exclude='tests' --exclude='storage/logs' --exclude='storage/framework/cache' --exclude='storage/framework/sessions' --exclude='storage/framework/views' --exclude='node_modules' --exclude='.env' ./ deploy/
+
+      - name: 🚀 Deploy via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          username: ${{ secrets.TBS_SSH_USERNAME }}
+          server: ${{ secrets.TBS_SSH_SERVER }}
+          port: ${{ secrets.TBS_SSH_PORT }}
+          ssh_private_key: ${{ secrets.TBS_SSH_PRIVATE_KEY }}
+          local_path: "./deploy/*"
+          remote_path: "/home/rabbeeco/tbs.rabbee.com/"
+          sftp_only: true
