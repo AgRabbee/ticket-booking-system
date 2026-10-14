@@ -71,10 +71,10 @@ A bus ticket booking web application built with Laravel. It allows customers to 
 
 4. Set the database connection details and Stripe keys in `.env`.
 
-5. Run the database migrations:
+5. Run the database migrations and seed the demo company, bus, districts and accounts:
 
    ```bash
-   php artisan migrate
+   php artisan migrate --seed
    ```
 
 6. Install frontend dependencies and build assets:
@@ -99,6 +99,34 @@ docker compose up -d --build
 ```
 
 The application will be available at `http://localhost:8080`.
+
+## Demo Data
+
+Trips are dated, so a deployment runs out of bookable trips over time. When no upcoming trip has a free seat, the home page shows a **Generate demo trips** button that adds five trips with empty seats over the coming week, each run by a randomly named demo operator. The same can be done from the command line (for example from a daily cron job):
+
+```bash
+php artisan demo:trips
+```
+
+Demo accounts (password `123456`), offered on the sign-in page:
+
+| Role | Email |
+| --- | --- |
+| System admin (demo) | `demo.admin@tbs.com` |
+| Company admin | `demo.company@tbs.com` |
+| Customer | `demo.traveller@tbs.com` |
+
+These accounts are listed in `config/demo.php`. The `demo` middleware stops them deleting transport types, pausing or denying users and companies, and changing their passwords; they get a pop-up explaining why. The real system admin (`admin@tbs.com`) is not published and has no restrictions.
+
+To reset a database to a clean, complete demo data set (every role, three active companies and one pending, buses, drivers, past sales and upcoming trips):
+
+```bash
+php artisan db:seed --class=DemoDataSeeder
+```
+
+This empties every table except `districts` and `transports`, deletes every user except the main system admin `admin@tbs.com` (whose row is left untouched), and then refills everything with new data. `php artisan migrate --seed` on a new database produces the same data set.
+
+Stripe runs in test mode: pay with card `4242 4242 4242 4242`, any future expiry date and any CVC.
 
 ## Project Background
 

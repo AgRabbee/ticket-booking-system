@@ -1,86 +1,52 @@
 @extends('layouts.public')
+
+@section('title', 'Contact')
+
 @section('content')
-
-    {{-- @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+    <div class="pagehead">
+        <div class="wrap wrap--narrow">
+            <h1>Contact the system admin</h1>
+            <p>Ask about a booking, a pending account or a company registration.</p>
         </div>
-    @endif --}}
-
-    @if (session()->has('message'))
-        <div class="alert alert-{{ session('type') }}">
-            {{ session('message') }}
-        </div>
-    @endif
-
-
-<!--SEARCH-BAR-->
-    <div class="container">
-        <form action="{{ url('/contact') }}" method="post">
-            @csrf
-        <div class="col-md-9 msg-box">
-            <div class="card card-info ">
-              <div class="card-header">
-                <h3 class="card-title">Compose New Message</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <div class="form-group">
-                    <label for="subject">Subject</label><span class="text-danger">*</span>
-                  <input class="form-control @error('subject') is-invalid @enderror" type="text" id="subject" value="{{ old('subject') }}" name="subject" required>
-                  @error('subject')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                  @enderror
-                </div>
-                <div class="form-group">
-                    <label for="email">Your Registered Email</label><span class="text-danger">*</span>
-                    <input class="form-control @error('email') is-invalid @enderror" type="email"id="email" value="{{ old('email') }}" name="email" required>
-                    @error('email')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                </div>
-                <div class="form-group">
-                    <label for="msg">Your Message</label>
-                    <textarea name="msg" rows="5" cols="80" class="form-control"></textarea>
-                </div>
-
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <div class="float-right">
-                  <button type="submit" class="btn btn-primary"><i class="far fa-envelope"></i> Send</button>
-                </div>
-              </div>
-              <!-- /.card-footer -->
-            </div>
-            <!-- /.card -->
-          </div>
-      </form>
     </div>
-@endsection
 
+    <div class="wrap wrap--narrow pull">
+        <form class="sheet sheet--lg" action="{{ url('/contact') }}" method="post">
+            @csrf
 
-@section('public_css')
-    <style media="screen">
-    .msg-box{
-    		width:100%;
-            margin: 0 auto;
-    	}
-</style>
+            @if (session()->has('message'))
+                <div class="alert @if(session('type') === 'danger') alert--danger @endif" role="alert" style="margin-bottom:20px">
+                    <span class="icon" aria-hidden="true">info</span>
+                    <span>{{ session('message') }}</span>
+                </div>
+            @endif
 
-@endsection
-@section('public_scripts')
-    <script type="text/javascript">
-
-
-    </script>
-
+            <div class="form-grid">
+                <div>
+                    <label class="field @error('subject') field--error @enderror">
+                        <span class="field__label">Subject</span>
+                        <input type="text" id="subject" name="subject" value="{{ old('subject') }}" required>
+                    </label>
+                    @error('subject')<p class="field-msg">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label class="field @error('email') field--error @enderror">
+                        <span class="field__label">Your registered email</span>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="email" required>
+                    </label>
+                    @error('email')<p class="field-msg">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label class="field @error('msg') field--error @enderror">
+                        <span class="field__label">Message</span>
+                        <textarea id="msg" name="msg" rows="6">{{ old('msg') }}</textarea>
+                    </label>
+                    @error('msg')<p class="field-msg">{{ $message }}</p>@enderror
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn" type="submit"><span class="icon" aria-hidden="true">mail</span> Send message</button>
+            </div>
+        </form>
+    </div>
 @endsection

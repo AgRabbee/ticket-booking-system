@@ -31,7 +31,7 @@
               @foreach ($bus_details as $key => $value)
                   <tr>
                       <td>{{ $value->id }}</td>
-                      <td>{{ $value->companies[0]->company_name }}</td>
+                      <td>{{ Auth::user()->companies[0]->company_name }}</td>
                       <td>{{ $value->registration_no }}</td>
                       <td>{{ $value->total_seats }}</td>
                   </tr>

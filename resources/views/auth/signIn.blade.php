@@ -1,163 +1,93 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Ticket Booking System | Log in</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.public')
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css')}}">
-    <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/admin-lte/3.0.0-rc.3/css/adminlte.min.css">
+@section('title', 'Sign in')
 
-    <style media="screen">
-        .login-box {
-            margin: 6% auto;
-            width: 400px;
-        }
-
-        .blink {
-            text-align: center;
-        }
-
-        .blink a {
-            font-size: 34px;
-            animation: blink 2.5s ease-in-out infinite;
-        }
-
-        @keyframes blink {
-            0% {
-                opacity: 0;
-                font-weight: 0;
-            }
-            25% {
-                opacity: .5;
-                font-weight: 400;
-            }
-            50% {
-                opacity: 1;
-                font-weight: 400;
-            }
-            75% {
-                opacity: .5;
-                font-weight: 400;
-            }
-            100% {
-                opacity: 0;
-                font-weight: 0;
-            }
-            /* 0%{opacity: 0;}
-            50%{opacity: .5;}
-            100%{opacity: 1;} */
-        }
-
-    </style>
-</head>
-<body class="hold-transition login-page">
-<div class="login-box">
-    <div class="login-logo blink">
-        <a href="{{url('/')}}">Bus Ticket Booking System</a>
+@section('content')
+    <div class="pagehead">
+        <div class="wrap">
+            <h1>Sign in</h1>
+            <p>For registered travellers, company admins and system admins. Booking a ticket doesn't need an account.</p>
+        </div>
     </div>
-    <!-- /.login-logo -->
-    <div class="card">
-        <div class="card-body login-card-body">
-            <p class="login-box-msg">Sign in to start your session</p>
 
-            @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+    <div class="wrap pull">
+        <div class="auth">
+            <form class="sheet sheet--lg" id="sign_in" method="POST" action="{{ url('signIn') }}">
+                @csrf
+                <h2 class="sheet__title">Your account</h2>
 
-            @if (session()->has('message'))
-                <div class="alert alert-{{ session('type') }}">
-                    {{ session('message') }}
-                </div>
-            @endif
-
-
-            <form id="sign_in" method="POST" action="{{ url('signIn') }}" class="col-xs-12">
-                {{ csrf_field() }}
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control @error('email') is-invalid @enderror" name="email"
-                           placeholder="Email" required autofocus>
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
-                        </div>
+                @if (count($errors) > 0)
+                    <div class="alert alert--danger" role="alert" style="margin-bottom:20px">
+                        <span class="icon" aria-hidden="true">error</span>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
-                    @error('email')
-                    <span class="invalid-feedback" role="alert">
-                  <strong>{{ $message }}</strong>
-              </span>
-                    @enderror
-                </div>
-                <div class="input-group mb-3">
-                    <input type="password" class="form-control" name="password" placeholder="Password" required>
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <input type="checkbox" id="remember">
+                @endif
 
-                            <label for="remember">
-                                Remember Me
-                            </label>
-                        </div>
+                @if (session()->has('message'))
+                    <div class="alert @if(session('type') === 'danger') alert--danger @endif" role="alert" style="margin-bottom:20px">
+                        <span class="icon" aria-hidden="true">{{ session('type') === 'danger' ? 'error' : 'check_circle' }}</span>
+                        <span>{{ session('message') }}</span>
                     </div>
-                    <!-- /.col -->
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
-                    </div>
-                    <!-- /.col -->
+                @endif
+
+                <div class="form-grid">
+                    <label class="field">
+                        <span class="field__label">Email</span>
+                        <input type="email" name="email" id="email" autocomplete="username" required autofocus>
+                    </label>
+                    <label class="field">
+                        <span class="field__label">Password</span>
+                        <input type="password" name="password" id="password" autocomplete="current-password" required>
+                    </label>
                 </div>
+                <div class="form-actions">
+                    <button class="btn" type="submit"><span class="icon" aria-hidden="true">login</span> Sign in</button>
+                    <a class="btn btn--text" href="{{ url('/signUp') }}">Create an account</a>
+                </div>
+                <p class="field-hint" style="margin:20px 0 0">Account still pending or locked out? <a href="{{ url('/contact') }}">Contact the system admin</a>.</p>
             </form>
 
-            {{-- <div class="social-auth-links text-center mb-3">
-              <p>- OR -</p>
-              <a href="#" class="btn btn-block btn-primary">
-                <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-              </a>
-              <a href="#" class="btn btn-block btn-danger">
-                <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-              </a>
-            </div> --}}
-            <!-- /.social-auth-links -->
-
-            <div class="d-flex justify-content-between row m-1">
-                <div class="col-xs-6">
-                    <a href="{{ url('/signUp') }}">Register Now!</a>
+            <aside class="sheet sheet--lg" aria-labelledby="demo-title">
+                <span class="chip chip--amber">Demo</span>
+                <h2 class="sheet__title" id="demo-title" style="margin-top:12px; margin-bottom:8px">Try a demo account</h2>
+                <p class="muted">Pick a role to fill in the form, then sign in. All three use the password <strong class="num">{{ config('demo.password') }}</strong>. Demo accounts can add and edit, but can't delete data or lock other accounts.</p>
+                <div class="demo-accounts">
+                    <button class="demo-account" type="button" data-demo-email="{{ config('demo.logins.traveller') }}">
+                        <span class="icon" aria-hidden="true">person</span>
+                        <strong>Traveller</strong>
+                        <small>{{ config('demo.logins.traveller') }} · can register a company</small>
+                        <em>Use</em>
+                    </button>
+                    <button class="demo-account" type="button" data-demo-email="{{ config('demo.logins.company') }}">
+                        <span class="icon" aria-hidden="true">directions_bus</span>
+                        <strong>Company admin</strong>
+                        <small>{{ config('demo.logins.company') }} · trips, buses, drivers, sales</small>
+                        <em>Use</em>
+                    </button>
+                    <button class="demo-account" type="button" data-demo-email="{{ config('demo.logins.admin') }}">
+                        <span class="icon" aria-hidden="true">shield_person</span>
+                        <strong>System admin</strong>
+                        <small>{{ config('demo.logins.admin') }} · users, companies, all sales</small>
+                        <em>Use</em>
+                    </button>
                 </div>
-                <div class="col-xs-6">
-                    <a href="forgot-password.html">Forgot Password?</a>
-                </div>
-                <span><a href="{{ url('/contact') }}">Contact to System Admin</a></span>
-            </div>
-
+            </aside>
         </div>
-        <!-- /.login-card-body -->
     </div>
-</div>
-<!-- /.login-box -->
+@endsection
 
-<!-- jQuery -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="//cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@section('public_scripts')
+    <script>
+        document.querySelectorAll('[data-demo-email]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                document.getElementById('email').value = button.dataset.demoEmail;
+                document.getElementById('password').value = @json(config('demo.password'));
+                document.querySelector('#sign_in button[type="submit"]').focus();
+            });
+        });
+    </script>
+@endsection

@@ -8,9 +8,11 @@ use App\Http\Requests\SearchTripRequest;
 use App\Mail\BookingMail;
 use App\Mail\ContactMail;
 use App\Models\Reservation;
+use App\Models\User;
 use App\Repositories\Payment\PaymentRepository;
 use App\Repositories\Reservation\ReservationRepository;
 use App\Repositories\User\UserRepository;
+use App\Services\DemoTripService;
 use App\Services\PaymentService;
 use App\Services\ReservationService;
 use App\Services\TripService;
@@ -28,7 +30,8 @@ class PagesController extends Controller
         private readonly PaymentRepository     $paymentRepo,
         private readonly ReservationRepository $reservationRepo,
         private readonly PaymentService        $paymentService,
-        private readonly ReservationService    $reservationService
+        private readonly ReservationService    $reservationService,
+        private readonly DemoTripService       $demoTripService
     )
     {
         Parent::__construct();
@@ -41,10 +44,29 @@ class PagesController extends Controller
 
     public function bus()
     {
+        $departures = $this->tripService->bookableDepartures();
+
         return view('bus.index')->with([
-            'tripsInfo' => $this->tripService->allLocations(),
-            'allRoutes' => $this->tripService->allRoutes(),
+            'tripsInfo'  => $this->tripService->allLocations(),
+            'departures' => $departures,
+            'routes'     => $this->tripService->popularRoutes($departures),
         ]);
+    }
+
+    /**
+     * Portfolio demo aid: trips are dated, so refill them when nothing is bookable.
+     */
+    public function demoTrips()
+    {
+        if ($this->demoTripService->hasBookableTrips()) {
+            return redirect('/')->withInfoMessage('Trips are already available to book.');
+        }
+
+        $created = $this->demoTripService->generate();
+
+        return $created > 0
+            ? redirect('/')->withSuccessMessage($created . ' demo trips added. Pick one to try a booking.')
+            : redirect('/')->withErrorMessage('Demo trips need the districts and transport types. Run the database seeders first.');
     }
 
     public function contact_form()
@@ -58,13 +80,14 @@ class PagesController extends Controller
 
         try {
             /** User creation */
-            $user = $this->userRepo->create([
-                'first_name'  => $request->f_name,
-                'last_name'   => $request->l_name,
-                'phone'       => $request->phone,
-                'email'       => $request->email,
-                'user_status' => 0,
-            ]);
+            $user = ($request->email ? User::where('email', $request->email)->first() : null)
+                ?? $this->userRepo->create([
+                    'first_name'  => $request->f_name,
+                    'last_name'   => $request->l_name,
+                    'phone'       => $request->phone,
+                    'email'       => $request->email,
+                    'user_status' => 0,
+                ]);
 
             /** Stripe payment */
             if ($request->stripeToken) {
@@ -94,8 +117,13 @@ class PagesController extends Controller
 
             /** Mail */
             if ($request->email) {
-                $data = (new Reservation())->dataForPrint($payment->id);
-                Mail::to($request->email)->send(new BookingMail($data));
+                try {
+                    $data = (new Reservation())->dataForPrint($payment->id);
+                    Mail::to($request->email)->send(new BookingMail($data));
+                } catch (Throwable $e) {
+                    // The booking is already committed; a mail failure must not report it as failed.
+                    Log::warning('Booking mail not sent', [ 'error' => $e->getMessage() ]);
+                }
             }
 
             return redirect('/print')->withSuccessMessage('Payment Successful');
@@ -106,7 +134,8 @@ class PagesController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            return back()->withErrors('Payment failed. Please try again.');
+            // The checkout page is only reachable by POST, so there is no page to go back to.
+            return redirect('/')->withErrorMessage('Payment failed and no seats were booked. Please search again and retry.');
         }
     }
 

@@ -2,15 +2,8 @@
 @include('layouts._partials.public_navbar')
 
 @include('sweetalert::alert')
-<!-- Main content -->
-<section class="content" style="margin:10px 0; min-height: 376px;">
-    <div class="container mt-3">
-        @yield('page_header')
-    </div>
-    <div class="container">
-        @yield('content')
-    </div>
-</section>
-<!-- /.content -->
+<main id="main">
+    @yield('content')
+</main>
 @include('layouts._partials.public_footer')
 @include('layouts._partials.public_foot')

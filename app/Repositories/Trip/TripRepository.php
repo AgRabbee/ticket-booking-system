@@ -27,6 +27,11 @@ class TripRepository
         return (new Trip())->allRoutes();
     }
 
+    public function upcomingDepartures(): Collection
+    {
+        return (new Trip())->upcomingDepartures();
+    }
+
     public function searchTrips($from, $to, $date): Collection
     {
         return (new Trip())->searchTrips($from, $to, $date);

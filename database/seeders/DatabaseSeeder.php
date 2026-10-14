@@ -10,14 +10,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RoleTableSeeder::class,
-            UserTableSeeder::class,
-            RoleUserTableSeeder::class,
             DistrictsTableSeeder::class,
-            CompanySeeder::class,
             TransportSeeder::class,
-            CompanyUserSeeder::class,
-            CompanyTransportSeeder::class,
+            // Roles, users, companies, buses, trips and bookings.
+            DemoDataSeeder::class,
         ]);
     }
 }

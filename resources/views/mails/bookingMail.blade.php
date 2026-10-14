@@ -1,96 +1,80 @@
+@php
+    $fee = 21;
+    $ticketPrice = $data[0]->fare * count($data);
+@endphp
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Ticket Booking System</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Your booking · Ticket Booking System</title>
     </head>
-    <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 border bd-info p-2">
-                    <h1>Success!!</h1>
-                </div>
-            </div>
+    <body style="margin:0; padding:24px 12px; background:#F4F7F5; color:#16201B; font-family:Roboto, Arial, Helvetica, sans-serif; font-size:16px; line-height:1.5;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#FFFFFF; border-radius:16px; overflow:hidden;">
+            <tr>
+                <td style="background:#003527; color:#FFFFFF; padding:24px 28px;">
+                    <div style="font-size:14px; color:#B4D8C9;">Ticket Booking System</div>
+                    <div style="font-size:26px; font-weight:bold; margin-top:6px;">Your seats are booked</div>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:28px;">
+                    <p style="margin:0 0 16px;">Hi {{ $data[0]->first_name . ' ' . $data[0]->last_name }},</p>
+                    <p style="margin:0 0 20px;">Here are the details of your journey. Show this email or your printed ticket at the counter before boarding.</p>
 
-            <div class="row">
-                <h2>hi, {{ $data[0]->first_name . ' ' . $data[0]->last_name }}</h2>
-                <h3>Booking Details</h3>
-                <p><b>Payment ID:</b> {{ $data[0]->id}}</p>
-                <p><b>Payment Date:</b> {{ date('d-M-y', strtotime($data[0]->created_at))}}</p>
+                    <div style="font-size:22px; font-weight:bold; color:#006A4E; margin-bottom:16px;">{{ $data[0]->startPoint }} to {{ $data[0]->endPoint }}</div>
 
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                        <tr>
+                            <td style="padding:6px 0; color:#44524B;">Operator</td>
+                            <td style="padding:6px 0; text-align:right;">{{ $data[0]->company_name }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:6px 0; color:#44524B;">Payment ID</td>
+                            <td style="padding:6px 0; text-align:right;">#{{ $data[0]->id }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:6px 0; color:#44524B;">Payment date</td>
+                            <td style="padding:6px 0; text-align:right;">{{ date('j M Y', strtotime($data[0]->created_at)) }}</td>
+                        </tr>
+                    </table>
 
-                <p><b>Journey:</b> {{ $data[0]->startPoint}} - {{ $data[0]->endPoint }}</p>
-                <p><b>Company name:</b> {{ $data[0]->company_name}}</p>
-            </div>
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                <th align="left" style="padding:10px 0; border-bottom:1px solid #D3DDD7; font-size:12px; color:#44524B;">SEAT</th>
+                                <th align="left" style="padding:10px 0; border-bottom:1px solid #D3DDD7; font-size:12px; color:#44524B;">DATE</th>
+                                <th align="left" style="padding:10px 0; border-bottom:1px solid #D3DDD7; font-size:12px; color:#44524B;">DEPARTS</th>
+                                <th align="right" style="padding:10px 0; border-bottom:1px solid #D3DDD7; font-size:12px; color:#44524B;">FARE (BDT)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data as $line)
+                                <tr>
+                                    <td style="padding:10px 0; border-bottom:1px solid #D3DDD7;"><strong>{{ $line->seat_number }}</strong></td>
+                                    <td style="padding:10px 0; border-bottom:1px solid #D3DDD7;">{{ $line->date }}</td>
+                                    <td style="padding:10px 0; border-bottom:1px solid #D3DDD7;">{{ $line->start_time }}</td>
+                                    <td align="right" style="padding:10px 0; border-bottom:1px solid #D3DDD7;">{{ number_format($line->fare) }}</td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td colspan="3" style="padding:10px 0; color:#44524B;">Ticket price</td>
+                                <td align="right" style="padding:10px 0;">{{ number_format($ticketPrice) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="padding:4px 0 10px; color:#44524B;">System fee</td>
+                                <td align="right" style="padding:4px 0 10px;">{{ $fee }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="padding:12px 0; border-top:2px solid #16201B;"><strong>Total</strong></td>
+                                <td align="right" style="padding:12px 0; border-top:2px solid #16201B;"><strong>BDT {{ number_format($ticketPrice + $fee) }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-            <!-- Table row -->
-            <div class="row py-2">
-              <div class="col-12 table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                  <tr>
-                    <th>Qty</th>
-                    <th>Seat Number</th>
-                    <th>Date</th>
-                    <th>Start Time</th>
-                    <th>Fare</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                      @php
-                          $total = 0;
-                      @endphp
-                      @for ($i=0; $i < count($data); $i++)
-                          @php
-                              $total = $data[$i]->fare * count($data);
-                          @endphp
-                          <tr>
-                              <td>{{ $i+1 }}</td>
-                              <td>{{ $data[$i]->seat_number }}</td>
-                              <td>{{ $data[$i]->date }}</td>
-                              <td>{{ $data[$i]->start_time }}</td>
-                              <td>{{ $data[$i]->fare }}</td>
-
-                          </tr>
-                      @endfor
-
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.col -->
-            </div>
-            <!-- /.row -->
-            <!-- /.row -->
-
-            <div class="row">
-                <div class="table-responsive">
-                  <table class="table">
-                    <tbody>
-                    <tr>
-                      <th>Ticket Price:</th>
-                      <td>{{ $total }}/-</td>
-                    </tr>
-                    <tr>
-                      <th>System Fee:</th>
-                      <td>21/-</td>
-                    </tr>
-                    <tr>
-                      <th>Total:</th>
-                      <td>{{$total+21}}/-</td>
-                    </tr>
-                  </tbody></table>
-                </div>
-            </div>
-            <!-- /.row -->
-
-            <div class="row">
-                <div class="col-md-12 border bd-info p-2 text-center">
-                    <h1>Thanks for being with us!!</h1>
-                </div>
-            </div>
-
-        </div>
-
-
+                    <p style="margin:24px 0 0; color:#44524B;">Thanks for travelling with us.</p>
+                </td>
+            </tr>
+        </table>
     </body>
 </html>

@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 
 @section('page_header')
-<h1 class="m-0 text-dark">All Users</h1>
+<h1 class="m-0 text-dark">Dashboard</h1>
 @endsection
 
 @section('breadcrumb_list')
-<li class="breadcrumb-item active">All users</li>
+<li class="breadcrumb-item active">Overview</li>
 @endsection
 
 @section('content')
