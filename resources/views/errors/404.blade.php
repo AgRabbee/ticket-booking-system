@@ -1,46 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="//cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-        body{
-            margin-top: 150px;
-            background-color: #C4CCD9;
-        }
-        .error-main{
-            background-color: #fff;
-            box-shadow: 0px 10px 10px -10px #5D6572;
-        }
-        .error-main h1{
-            font-weight: bold;
-            color: #444444;
-            font-size: 150px;
-            text-shadow: 2px 4px 5px #6E6E6E;
-        }
-        .error-main h6{
-            color: #42494F;
-            font-size: 20px;
-        }
-        .error-main p{
-            color: #9897A0;
-            font-size: 15px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Page not found · Ticket Booking System</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/tbs-mark.svg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="{{ asset('css/tbs.css') }}">
 </head>
 <body>
-
-<div class="container">
-    <div class="row text-center">
-        <div class="col-lg-6 offset-lg-3 col-sm-6 offset-sm-3 col-12 p-3 error-main">
-            <div class="row">
-                <div class="col-lg-8 col-12 col-sm-10 offset-lg-2 offset-sm-1">
-                    <h1 class="m-0">404</h1>
-                    <h6>Page not found - {{ env('APP_NAME') }}</h6>
-                </div>
-            </div>
-        </div>
+<main class="errorpage">
+    <div>
+        <div class="errorpage__code">404</div>
+        <h1>This stop isn't on the route</h1>
+        <p>The page you asked for doesn't exist or has moved. Head back to the departure board to find a bus.</p>
+        <a class="btn btn--amber" href="{{ url('/') }}">Back to departures</a>
     </div>
-</div>
-
+</main>
 </body>
 </html>

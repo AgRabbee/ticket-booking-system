@@ -1,279 +1,206 @@
 @extends('layouts.public')
+
+@section('title', 'Choose a bus')
+
 @section('content')
+    @php
+        $first = $search_details->first();
+        $journeyDate = \Carbon\Carbon::parse($first->date);
+    @endphp
 
-
-
-<!--SEARCH-BAR-->
-    <div class="container">
-        <div class="row my-5">
-            <div class="col-md-12">
-                <table id="example1" class="table table-striped display responsive">
-                  <thead>
-                      <tr>
-                          <th>Company name</th>
-                          <th>Departure Time</th>
-                          <th>Seats Available</th>
-                          <th>Fare</th>
-                          <th>Action</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {{-- @foreach ($search_details as $value) --}}
-                      {{-- {{ $search_details = $request->session()->get('search_details')}} --}}
-                      @foreach ($search_details as $value)
-                      <tr>
-                          <td>{{ $value->company_name }}</td>
-                          <td>{{ $value->start_time }}</td>
-                          <td>{{ $value->total_seats }}</td>
-                          <td>{{ $value->fare }}</td>
-                          <td>
-                              <a href="#" id="trip{{ $value->t_id }}" class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#modal-seats{{ $value->t_id }}">View Seats</a>
-                          </td>
-
-                      </tr>
-                      <span id="data"></span>
-                      @endforeach
-                  </tbody>
-                  <tfoot>
-                  <tr>
-                      <th>Company name</th>
-                      <th>Departure Time</th>
-                      <th>Seats Available</th>
-                      <th>Fare</th>
-                      <th>Action</th>
-                  </tr>
-                  </tfoot>
-                </table>
-
-
-                <!--edit modal-->
-                 @foreach ($search_details as $value)
-                    <div class="modal fade" id="modal-seats{{ $value->t_id }}" aria-hidden="true" style="display: none;">
-                        <div class="modal-dialog modal-xl">
-                            <form action="{{ url('/bus/booking') }}" method="post">
-                                @csrf
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Choose your seat(s)</h4>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <span id="info" class="px-5">Hold the cursor on seats for seat numbers, click to select or deselect.</span>
-                                                <div class="seats-layout">
-                                                    <div class="row">
-                                                        <i class="far fa-user ml-auto" data-toggle='tooltip' data-placement='bottom' data-original-title="Driver" ></i>
-                                                    </div>
-                                                    <div class="row" id="seats{{ $value->t_id }}"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <div class="input-group col-md-4">
-                                                        <input type="checkbox" name="" value=""  id="seatsInfo">
-                                                        <label for="">Available</label>
-                                                    </div>
-                                                    <div class="input-group col-md-4">
-                                                        <input type="checkbox" name="" value="" id="seatsInfo" checked >
-                                                        <label for="">Selected</label>
-                                                    </div>
-                                                    <div class="input-group col-md-4">
-                                                        <input type="checkbox" name="" value="" id="seatsInfo" checked disabled>
-                                                        <label for="">Booked</label>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <table class="table table-striped" >
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Seats</th>
-                                                                <th>Fare</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="seatsTable{{ $value->t_id }}">
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="row">
-                                                    <p><strong>Total:</strong> <span id="totalCost{{ $value->t_id }}"></span></p>
-                                                    <input type="hidden" name="total" id="total{{ $value->t_id }}" value="">
-                                                    <input type="hidden" name="trip_id" value="{{ $value->t_id }}">
-                                                </div>
-                                                <div class="row">
-                                                    <label for="">Choose your boarding point <span class="text-danger">*</span></label>
-                                                    <select class="form-control" name="boarding_point">
-                                                        {{-- <option value="">--select one--</option> --}}
-                                                        <option value="">{{ $value->company_name.' bus counter, '.$value->start_name }}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal-footer justify-content-between">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <input type="submit" class="btn btn-primary" name="" value="Continue">
-                                    </div>
-                                </div>
-                            <!-- /.modal-content -->
-                            </form>
-                        </div>
-                    <!-- /.modal-dialog -->
-                    </div>
-                     @endforeach
-                <!--modal-->
-            </div>
+    <div class="pagehead">
+        <div class="wrap">
+            <ol class="steps" aria-label="Booking progress">
+                <li>Search</li>
+                <li aria-current="step">Choose seats</li>
+                <li>Pay</li>
+                <li>Ticket</li>
+            </ol>
+            <h1 class="pagehead__route">{{ $first->start_name }} <span class="route__track" aria-hidden="true"></span><span class="sr-only">to</span> {{ $first->end_name }}</h1>
+            <p>{{ $journeyDate->format('l, j F Y') }} · {{ $search_details->count() }} {{ Str::plural('bus', $search_details->count()) }} · <a href="{{ url('/') }}#search" style="color:var(--amber)">Change search</a></p>
         </div>
     </div>
 
-<!--SEARCH-BAR-END-->
+    <div class="wrap pull">
+        @foreach ($search_details as $value)
+            @php
+                [$clock, $meridiem] = array_pad(explode(' ', $value->start_time, 2), 2, '');
+                $boarding = $value->company_name . ' bus counter, ' . $value->start_name;
+            @endphp
+            <article class="sheet trip" data-trip="{{ $value->t_id }}" data-fare="{{ $value->fare }}">
+                <div class="trip__row">
+                    <div class="trip__time">{{ $clock }}<small> {{ $meridiem }}</small></div>
+                    <div>
+                        <h2 class="trip__name">{{ $value->company_name }}</h2>
+                        <div class="trip__tags">
+                            <span class="chip">{{ $value->ac_type == '1' ? 'AC' : 'Non-AC' }}</span>
+                            <span class="chip">Bus {{ $value->registration_no }}</span>
+                            @if ($value->seats_left == 0)
+                                <span class="chip chip--low">Sold out</span>
+                            @elseif ($value->seats_left <= 5)
+                                <span class="chip chip--low">{{ $value->seats_left }} {{ Str::plural('seat', $value->seats_left) }} left</span>
+                            @else
+                                <span class="chip chip--green">{{ $value->seats_left }} of {{ $value->total_seats }} seats free</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="trip__fare"><small>per seat</small>BDT {{ number_format($value->fare) }}</div>
+                    <button class="btn" type="button" data-seats-toggle aria-expanded="false" aria-controls="seats-panel-{{ $value->t_id }}" @disabled($value->seats_left == 0)>Select seats</button>
+                </div>
 
+                <div class="trip__panel" id="seats-panel-{{ $value->t_id }}" hidden>
+                    <form class="trip__panel-grid" action="{{ url('/bus/booking') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="trip_id" value="{{ $value->t_id }}">
+                        <input type="hidden" name="total" value="0" data-total-input>
+                        <input type="hidden" name="boarding_point" value="{{ $boarding }}">
+
+                        <div class="bus" style="margin:0">
+                            <div class="bus__front">
+                                <span>Front of bus</span>
+                                <span class="icon" aria-hidden="true" title="Driver">airline_seat_recline_normal</span>
+                            </div>
+                            <div class="seats" data-seats aria-label="Seat map">
+                                <p class="loading" style="grid-column:1 / -1"><span class="spinner" aria-hidden="true"></span> Loading seats…</p>
+                            </div>
+                            <div class="legend">
+                                <span><i></i> Available</span>
+                                <span><i class="is-selected"></i> Selected</span>
+                                <span><i class="is-booked"></i> Booked</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3>Your seats</h3>
+                            <ul class="picked" data-picked aria-live="polite">
+                                <li class="picked__none">Tap a free seat on the map to add it.</li>
+                            </ul>
+                            <div class="tally" style="border-top:0">
+                                <span>Ticket price</span>
+                                <strong data-total-text>BDT 0</strong>
+                            </div>
+                            <p class="field-hint" style="margin:16px 0 0"><strong>Boarding:</strong> {{ $boarding }}</p>
+                            <div class="form-actions">
+                                <button class="btn" type="submit" data-continue disabled>Continue to payment <span class="icon" aria-hidden="true">arrow_forward</span></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </article>
+        @endforeach
+    </div>
 @endsection
-
-@section('public_css')
-
-    <style media="screen">
-            .seats-layout {
-               width: 50%;
-               margin: auto;
-               border: 1px solid;
-               padding: 20px 42px;
-           }
-
-           .seats-layout input.checkbox, #seatsInfo {
-               width: 30px;
-               height: 20px;
-               margin: 5px 10px;
-               cursor: pointer;
-           }
-
-           input[type=checkbox]:nth-child(2) {
-               /* margin-right: 50px; */
-           }
-
-           .seats-layout i {
-               margin: 20px;
-               margin-right: 14px;
-               font-size: 20px;
-           }
-           #info{
-               font-size:13px;
-           }
-           #seatsTable{
-               min-height: 100px;
-           }
-    </style>
-@endsection
-
-
 
 @section('public_scripts')
-    <script type="text/javascript">
+    <script>
+        (function () {
+            var seatsUrl = @json(url('/seat_allocations'));
 
-$(document).ready(function(){
-
-
- @foreach ($search_details as $value)
-// ====================================================================
-    //seats manage
-// ====================================================================
-
-    $('#trip{{ $value->t_id }}').click(function(){
-
-        var trip_id = {{ $value->t_id }};
-        var returnedData;
-
-        $.ajax({
-           type:'GET',
-           url:'/seat_allocations',
-           // dataType: 'json',
-           data:{trip_id:trip_id},
-           success:function(data){
-
-              returnedData = data.success;
-              doSomething(returnedData);
-           }
-       });
-
-       function doSomething(param) {
-           var output='';
-          for (var i = 0; i < param.length; i++) {
-            if (param[i].seat_status == 2) {
-                output +="<input type='checkbox' disabled checked data-toggle='tooltip' name=seats[] data-placement='bottom' data-original-title="+ param[i].seat_number +" value= "+ param[i].seat_number +" class='checkbox' />";
-            }else{
-            output +="<input type='checkbox' data-toggle='tooltip' name=seats[] data-placement='bottom' data-original-title="+ param[i].seat_number + " value= " + param[i].seat_number +" class='checkbox' />";
+            function money(amount) {
+                return 'BDT ' + amount.toLocaleString('en-US');
             }
-           }
-           output += '';
 
-            $('#seats{{ $value->t_id }}').html(output);
+            document.querySelectorAll('[data-trip]').forEach(function (trip) {
+                var toggle = trip.querySelector('[data-seats-toggle]');
+                var panel = trip.querySelector('.trip__panel');
+                var map = trip.querySelector('[data-seats]');
+                var picked = trip.querySelector('[data-picked]');
+                var totalText = trip.querySelector('[data-total-text]');
+                var totalInput = trip.querySelector('[data-total-input]');
+                var submit = trip.querySelector('[data-continue]');
+                var fare = Number(trip.dataset.fare);
+                var loaded = false;
 
-            $(function () {
-                   $("input[data-toggle='tooltip']").tooltip();
-               });
+                function refresh() {
+                    var chosen = Array.prototype.slice.call(map.querySelectorAll('.seat[aria-pressed="true"]'));
+                    picked.innerHTML = '';
+                    panel.querySelectorAll('input[name="seats[]"]').forEach(function (input) { input.remove(); });
 
-               $('#seats{{ $value->t_id }} input.checkbox').click( function() {
-                       var count=0;
-                        if($(this).is(":checked")){
-                            var value = $(this).val();
-                           $("#seatsTable{{ $value->t_id }}").append("<tr><td id='seatNumber'>"+value+"</td><td>{{ $value->fare }}</td></tr>");
-                           count = $( "#seatsTable{{ $value->t_id }} tr" ).length;
-                       }else if($(this).is(":not(:checked)")){
-                           var value = $(this).val();
-                           $("td").filter(function() {
-                               return $(this).text() == value;
-                           }).closest("tr").remove();
-                           count = $( "#seatsTable{{ $value->t_id }} tr" ).length ;
-                       }
-                       var totalCost = {{ $value->fare }}*count;
-                       $('#totalCost{{ $value->t_id }}').text(totalCost);
-                       $('#total{{ $value->t_id }}').val(totalCost);
-                   });
-        }
+                    if (!chosen.length) {
+                        picked.innerHTML = '<li class="picked__none">Tap a free seat on the map to add it.</li>';
+                    }
 
-    });
-    @endforeach
+                    chosen.forEach(function (seat) {
+                        var item = document.createElement('li');
+                        var name = document.createElement('span');
+                        var price = document.createElement('span');
+                        name.textContent = 'Seat ' + seat.value;
+                        price.textContent = money(fare);
+                        item.appendChild(name);
+                        item.appendChild(price);
+                        picked.appendChild(item);
 
-});
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'seats[]';
+                        input.value = seat.value;
+                        map.parentNode.appendChild(input);
+                    });
 
+                    totalText.textContent = money(fare * chosen.length);
+                    totalInput.value = fare * chosen.length;
+                    submit.disabled = chosen.length === 0;
+                }
 
+                function draw(seats) {
+                    map.innerHTML = '';
+                    seats.forEach(function (seat) {
+                        var number = parseInt(String(seat.seat_number).slice(1), 10) || 1;
+                        var button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'seat';
+                        button.value = seat.seat_number;
+                        button.textContent = seat.seat_number;
+                        button.style.setProperty('--col', number > 2 ? number + 1 : number);
+                        button.setAttribute('aria-pressed', 'false');
+                        if (Number(seat.seat_status) !== 0) {
+                            button.disabled = true;
+                            button.setAttribute('aria-label', 'Seat ' + seat.seat_number + ', booked');
+                        }
+                        map.appendChild(button);
+                    });
+                }
 
+                function load() {
+                    fetch(seatsUrl + '?trip_id=' + encodeURIComponent(trip.dataset.trip), { headers: { 'Accept': 'application/json' } })
+                        .then(function (response) {
+                            if (!response.ok) throw new Error('Request failed');
+                            return response.json();
+                        })
+                        .then(function (data) {
+                            loaded = true;
+                            draw(data.success || []);
+                        })
+                        .catch(function () {
+                            map.innerHTML = '';
+                            var message = document.createElement('p');
+                            message.className = 'field-msg';
+                            message.style.gridColumn = '1 / -1';
+                            message.style.margin = '0';
+                            message.textContent = 'The seat map did not load. Close this panel and open it again to retry.';
+                            map.appendChild(message);
+                        });
+                }
 
-// $(document).on('change',function(){
-//
-//
-//     $(function () {
-//         $("input[data-toggle='tooltip']").tooltip();
-//     });
-//
-//
-// // ====================================================================
-//     //seats selections
-// // ====================================================================
-//     $('#seats input.checkbox').click( function() {
-//         var count=0;
-//         //alert('hi');
-//          if($(this).is(":checked")){
-//              var value = $(this).val();
-//             $("#seatsTable").append("<tr><td id='seatNumber'>"+value+"</td><td>{{ $value->fare }}</td></tr>");
-//             count = $( "#seatsTable tr" ).length;
-//         }else if($(this).is(":not(:checked)")){
-//             var value = $(this).val();
-//             $("td").filter(function() {
-//                 return $(this).text() == value;
-//             }).closest("tr").remove();
-//             count = $( "#seatsTable tr" ).length ;
-//         }
-//         var totalCost = {{ $value->fare }}*count;
-//         $('#totalCost').text(totalCost);
-//         $('#total').val(totalCost);
-//     });
-//
-//
-// });
+                toggle.addEventListener('click', function () {
+                    var open = panel.hidden;
+                    panel.hidden = !open;
+                    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    toggle.textContent = open ? 'Hide seats' : 'Select seats';
+                    if (open && !loaded) load();
+                });
+
+                map.addEventListener('click', function (event) {
+                    var seat = event.target.closest('.seat');
+                    if (!seat || seat.disabled) return;
+                    seat.setAttribute('aria-pressed', seat.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+                    refresh();
+                });
+            });
+
+            // With a single bus there is nothing to compare, so open its seat map straight away.
+            var toggles = document.querySelectorAll('[data-seats-toggle]:not([disabled])');
+            if (toggles.length === 1) toggles[0].click();
+        })();
     </script>
 @endsection

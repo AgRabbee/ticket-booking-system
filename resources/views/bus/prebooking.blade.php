@@ -1,255 +1,167 @@
 @extends('layouts.public')
+
+@section('title', 'Passenger and payment')
+
 @section('content')
+    @php
+        $trip = $tripDetails->first();
+        $fee = 21;
+        $ticketPrice = $trip->fare * count($seats);
+        $journeyDate = \Carbon\Carbon::parse($trip->date);
+    @endphp
 
-<!--SEARCH-BAR-->
-    <div class="container">
-        <div class="row my-5">
-            <div class="col-md-6">
-                <div class="card card-info">
-                      <div class="card-header">
-                          <h3 class="card-title">Passenger Details</h3>
-                      </div>
-                      <!-- /.card-header -->
-                      <div class="card-body">
-                          <form action="{{ url('/charge') }}" method="post" id="payment-form">
-                              @csrf
-                              <div class="form-group">
-                                  <label for="f_name">First Name <span class="text-danger">*</span></label>
-                                  <input type="text" name="f_name" id="f_name" class="form-control @error('f_name') is-invalid @enderror" required value="{{ old('f_name') }}">
-                                  @error('f_name')
-                                      <span class="invalid-feedback" role="alert">
-                                          <strong>{{ $message }}</strong>
-                                      </span>
-                                  @enderror
-                              </div>
-                              <div class="form-group">
-                                  <label for="l_name">last Name <span class="text-danger">*</span></label>
-                                  <input type="text" name="l_name" id="l_name" class="form-control @error('l_name') is-invalid @enderror" required value="{{ old('l_name') }}">
-                                  @error('l_name')
-                                      <span class="invalid-feedback" role="alert">
-                                          <strong>{{ $message }}</strong>
-                                      </span>
-                                  @enderror
-                              </div>
-                              <div class="form-group">
-                                  <label for="phone">Phone <span class="text-danger">*</span></label>
-                                  <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" required value="{{ old('phone') }}">
-                                  @error('phone')
-                                      <span class="invalid-feedback" role="alert">
-                                          <strong>{{ $message }}</strong>
-                                      </span>
-                                  @enderror
-                              </div>
-                              <div class="form-group">
-                                  <label for="email">Email <span class="text-muted">(optional)</span></label>
-                                  <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}">
-                                  @error('email')
-                                      <span class="invalid-feedback" role="alert">
-                                          <strong>{{ $message }}</strong>
-                                      </span>
-                                  @enderror
-                              </div>
-
-                              <div class="text-center border rounded py-3">
-                                  <h5>Total amount to pay: {{ ($total+21).'/-' }}</h5>
-                              </div>
-
-                            <div class="card-body">
-                                <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" id="custom-content-below-stripe-tab" data-toggle="pill" href="#custom-content-below-stripe" role="tab" aria-controls="custom-content-below-home" aria-selected="true">Stripe</a>
-                                    </li>
-                                    {{-- <li class="nav-item">
-                                        <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill" href="#custom-content-below-cash-on-delivery" role="tab" aria-controls="custom-content-below-profile" aria-selected="false">Cash on delivery</a>
-                                    </li> --}}
-                                </ul>
-                                <div class="tab-content" id="custom-content-below-tabContent">
-                                    <div class="tab-pane fade show active pt-3" id="custom-content-below-stripe" role="tabpanel" aria-labelledby="custom-content-below-stripe-tab">
-
-                                          <div class="form-group">
-                                            <label for="card-element">
-                                              Credit or debit card
-                                            </label>
-                                            <div id="card-element">
-                                              <!-- A Stripe Element will be inserted here. -->
-                                            </div>
-
-                                            <!-- Used to display form errors. -->
-                                            <div id="card-errors" role="alert"></div>
-                                          </div>
-
-                                          <button class="btn btn-success btn-sm">Submit Payment</button>
-
-                                    </div>
-                                    {{-- <div class="tab-pane fade pt-3" id="custom-content-below-cash-on-delivery" role="tabpanel" aria-labelledby="custom-content-below-cash-on-delivery-tab">
-                                        <div class="form-group">
-                                            <label for="">Your Address</label>
-                                            <textarea name="address" class="form-control" rows="3" cols="80"></textarea>
-                                        </div>
-                                        <div class="text-center">
-                                            <input type="submit" class="btn btn-success btn-sm" name="" value="Confirm Reservation">
-                                        </div>
-                                    </div> --}}
-                                </div>
-                            </div>
-                      </div>
-                  </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card card-info">
-                      <div class="card-header">
-                          <h3 class="card-title">Journey Details</h3>
-                      </div>
-                      <!-- /.card-header -->
-                      <div class="card-body">
-                           @foreach ($tripDetails as $value)
-                               <p><input type="hidden" name="tripId" value="{{ $value->t_id }}"></p>
-
-                               <p>{{ $value->start_name . ' - ' . $value->end_name}}</p>
-                               <p>Company name: {{ $value->company_name }}</p>
-                               <p>Journey Date: {{ $value->date .', '. $value->start_time }}</p>
-                               <p>Seat(s) no:
-                                   @foreach ($seats as $seat)
-                                     {{ $seat.', ' }}
-                                     <input type="hidden" name="seats[]" value=" {{ $seat.', ' }}">
-                                   @endforeach
-                                </p>
-                                <p>Boarding at {{ $value->company_name.' bus counter, '.$value->start_name }}</p>
-
-                           @endforeach
-
-                           <br>
-
-                           <h5>Fare Details</h5>
-                           <hr>
-                           <p>Ticket Price: {{ $total .'/-' }}</p>
-                           <p>System fee: 21/-</p>
-                           <p>Total: {{ ($total+21).'/-' }} </p>
-                      </div>
-
-
-                      <!--Total amount send-->
-                      <input type="hidden" name="totalAmount" value="{{ $total }}">
-                      <input type="hidden" name="fee" value="21">
-
-
-                  </div>
-            </div>
-
-          </form>
+    <div class="pagehead">
+        <div class="wrap">
+            <ol class="steps" aria-label="Booking progress">
+                <li>Search</li>
+                <li>Choose seats</li>
+                <li aria-current="step">Pay</li>
+                <li>Ticket</li>
+            </ol>
+            <h1>Passenger and payment</h1>
+            <p>{{ count($seats) }} {{ Str::plural('seat', count($seats)) }} on the {{ $trip->start_time }} {{ $trip->company_name }} bus, {{ $journeyDate->format('j F') }}.</p>
         </div>
     </div>
 
-<!--SEARCH-BAR-END-->
+    <div class="wrap pull">
+        <form class="checkout" action="{{ url('/charge') }}" method="post" id="payment-form">
+            @csrf
+            <input type="hidden" name="tripId" value="{{ $trip->t_id }}">
+            <input type="hidden" name="totalAmount" value="{{ $ticketPrice }}">
+            <input type="hidden" name="fee" value="{{ $fee }}">
+            @foreach ($seats as $seat)
+                <input type="hidden" name="seats[]" value="{{ trim($seat, " ,") }}">
+            @endforeach
 
+            <div class="stack">
+                @if ($errors->any())
+                    <div class="alert alert--danger" role="alert">
+                        <span class="icon" aria-hidden="true">error</span>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <section class="sheet sheet--lg">
+                    <h2 class="sheet__title">Passenger</h2>
+                    <div class="form-grid form-grid--2">
+                        <label class="field @error('f_name') field--error @enderror">
+                            <span class="field__label">First name</span>
+                            <input type="text" name="f_name" id="f_name" value="{{ old('f_name') }}" autocomplete="given-name" required>
+                        </label>
+                        <label class="field @error('l_name') field--error @enderror">
+                            <span class="field__label">Last name</span>
+                            <input type="text" name="l_name" id="l_name" value="{{ old('l_name') }}" autocomplete="family-name" required>
+                        </label>
+                        <label class="field @error('phone') field--error @enderror">
+                            <span class="field__label">Phone</span>
+                            <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" autocomplete="tel" required>
+                        </label>
+                        <div>
+                            <label class="field @error('email') field--error @enderror">
+                                <span class="field__label">Email (optional)</span>
+                                <input type="email" name="email" id="email" value="{{ old('email') }}" autocomplete="email">
+                            </label>
+                            <p class="field-hint">We send the booking details here.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="sheet sheet--lg">
+                    <h2 class="sheet__title">Card payment</h2>
+                    <div class="alert alert--amber" style="margin-bottom:20px">
+                        <span class="icon" aria-hidden="true">info</span>
+                        <span><strong>Demo payment.</strong> Stripe is in test mode, so no real money moves. Use card <strong class="num">4242 4242 4242 4242</strong>, any future expiry date, any CVC and any postcode.</span>
+                    </div>
+                    <div class="field">
+                        <label class="field__label" for="card-element">Credit or debit card</label>
+                        <div id="card-element"></div>
+                    </div>
+                    <div id="card-errors" role="alert"></div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit" id="pay-button"><span class="icon" aria-hidden="true">lock</span> Pay BDT {{ number_format($ticketPrice + $fee) }}</button>
+                        <a class="btn btn--text" href="{{ url('/') }}">Cancel</a>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="sheet sheet--lg" aria-labelledby="journey-title">
+                <h2 class="sheet__title" id="journey-title">Your journey</h2>
+                <div class="pagehead__route" style="font:600 1.5rem/1.2 var(--font-display)">
+                    {{ $trip->start_name }} <span class="route__track" aria-hidden="true" style="max-width:56px"></span><span class="sr-only">to</span> {{ $trip->end_name }}
+                </div>
+                <dl class="summary" style="margin-top:16px">
+                    <div><dt>Operator</dt><dd>{{ $trip->company_name }}</dd></div>
+                    <div><dt>Date</dt><dd>{{ $journeyDate->format('D, j M Y') }}</dd></div>
+                    <div><dt>Departs</dt><dd>{{ $trip->start_time }}</dd></div>
+                    <div><dt>Seats</dt><dd>{{ collect($seats)->map(fn($seat) => trim($seat, " ,"))->implode(', ') }}</dd></div>
+                    <div><dt>Boarding</dt><dd>{{ $trip->company_name . ' bus counter, ' . $trip->start_name }}</dd></div>
+                    <div><dt>Ticket price ({{ count($seats) }} × {{ number_format($trip->fare) }})</dt><dd>BDT {{ number_format($ticketPrice) }}</dd></div>
+                    <div><dt>System fee</dt><dd>BDT {{ $fee }}</dd></div>
+                    <div class="summary__total"><dt>Total</dt><dd>BDT {{ number_format($ticketPrice + $fee) }}</dd></div>
+                </dl>
+            </aside>
+        </form>
+    </div>
 @endsection
-
-@section('public_css')
-<style media="screen">
-    .StripeElement {
-      box-sizing: border-box;
-      height: 40px;
-      padding: 10px 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: white;
-      box-shadow: 0 1px 3px 0 #e6ebf1;
-      -webkit-transition: box-shadow 150ms ease;
-      transition: box-shadow 150ms ease;
-    }
-
-    .StripeElement--focus {
-      box-shadow: 0 1px 3px 0 #cfd7df;
-    }
-
-    .StripeElement--invalid {
-      border-color: #fa755a;
-    }
-
-    .StripeElement--webkit-autofill {
-      background-color: #fefde5 !important;
-    }
-</style>
-@endsection
-
-
 
 @section('public_scripts')
-<script src="https://js.stripe.com/v3/"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        // Create a Stripe client.
-        var stripe = Stripe('pk_test_qIyjmYGtr0GIZ7d6PLJOzO6S00ycAqmYYW');
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        (function () {
+            var form = document.getElementById('payment-form');
+            var button = document.getElementById('pay-button');
+            var errors = document.getElementById('card-errors');
+            var label = button.innerHTML;
 
-        // Create an instance of Elements.
-        var elements = stripe.elements();
-
-        // Custom styling can be passed to options when creating an Element.
-        // (Note that this demo uses a wider set of styles than the guide below.)
-        var style = {
-          base: {
-            color: '#32325d',
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            fontSmoothing: 'antialiased',
-            fontSize: '16px',
-            '::placeholder': {
-              color: '#aab7c4'
+            if (typeof Stripe === 'undefined') {
+                errors.textContent = 'The card form did not load. Check your connection and reload this page.';
+                button.disabled = true;
+                return;
             }
-          },
-          invalid: {
-            color: '#fa755a',
-            iconColor: '#fa755a'
-          }
-        };
 
-        // Create an instance of the card Element.
-        var card = elements.create('card', {style: style});
+            var stripe = Stripe(@json(config('services.stripe.key') ?: 'pk_test_qIyjmYGtr0GIZ7d6PLJOzO6S00ycAqmYYW'));
+            var card = stripe.elements().create('card', {
+                style: {
+                    base: {
+                        color: '#16201B',
+                        fontFamily: 'Roboto, system-ui, sans-serif',
+                        fontSize: '16px',
+                        '::placeholder': { color: '#5C6A63' }
+                    },
+                    invalid: { color: '#B3261E', iconColor: '#B3261E' }
+                }
+            });
+            card.mount('#card-element');
 
-        // Add an instance of the card Element into the `card-element` <div>.
-        card.mount('#card-element');
+            card.addEventListener('change', function (event) {
+                errors.textContent = event.error ? event.error.message : '';
+            });
 
-        // Handle real-time validation errors from the card Element.
-        card.addEventListener('change', function(event) {
-          var displayError = document.getElementById('card-errors');
-          if (event.error) {
-            displayError.textContent = event.error.message;
-          } else {
-            displayError.textContent = '';
-          }
-        });
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                button.disabled = true;
+                button.textContent = 'Processing payment…';
 
-        // Handle form submission.
-        var form = document.getElementById('payment-form');
-        form.addEventListener('submit', function(event) {
-          event.preventDefault();
+                stripe.createToken(card).then(function (result) {
+                    if (result.error) {
+                        errors.textContent = result.error.message;
+                        button.disabled = false;
+                        button.innerHTML = label;
+                        return;
+                    }
 
-          stripe.createToken(card).then(function(result) {
-            if (result.error) {
-              // Inform the user if there was an error.
-              var errorElement = document.getElementById('card-errors');
-              errorElement.textContent = result.error.message;
-            } else {
-              // Send the token to your server.
-              stripeTokenHandler(result.token);
-            }
-          });
-        });
-
-        // Submit the form with the token ID.
-        function stripeTokenHandler(token) {
-          // Insert the token ID into the form so it gets submitted to the server
-          var form = document.getElementById('payment-form');
-          var hiddenInput = document.createElement('input');
-          hiddenInput.setAttribute('type', 'hidden');
-          hiddenInput.setAttribute('name', 'stripeToken');
-          hiddenInput.setAttribute('value', token.id);
-          form.appendChild(hiddenInput);
-
-          // console.log(token);
-          // Submit the form
-          form.submit();
-        }
-    });
-
-</script>
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'stripeToken';
+                    input.value = result.token.id;
+                    form.appendChild(input);
+                    form.submit();
+                });
+            });
+        })();
+    </script>
 @endsection

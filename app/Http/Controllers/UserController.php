@@ -63,13 +63,15 @@ class UserController extends Controller
 
     public function show()
     {
-        if (Auth::user()->roles[0]->name == 'Super Admin') {
+        $roles = Auth::user()->roles->pluck('name');
+
+        if ($roles->contains('Super Admin')) {
             return view('admin.adminProfile');
-        } elseif (Auth::user()->roles[1]->name == 'Admin') {
+        } elseif ($roles->contains('Admin')) {
             return view('company_admin.adminProfile');
-        } elseif (Auth::user()->roles[0]->name == 'Customer') {
-            return view('customer.customerProfile');
         }
+
+        return view('customer.customerProfile');
     }
 
     public function update(UpdateUserRequest $request)

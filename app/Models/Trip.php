@@ -48,6 +48,18 @@ class Trip extends Model
             ->get();
     }
 
+    public function upcomingDepartures(): Collection
+    {
+        return DB::table('trips')
+            ->selectRaw('trips.id as t_id, trips.date, trips.start_time, trips.fare, trips.start_point, trips.end_point, s.name as start_name, e.name as end_name, companies.company_name, (select count(*) from reservations where reservations.trip_id = trips.id and reservations.seat_status = 0) as seats_left')
+            ->join('companies', 'trips.company_id', 'companies.id')
+            ->join('districts as s', 's.id', '=', 'trips.start_point')
+            ->join('districts as e', 'e.id', '=', 'trips.end_point')
+            ->where('trips.date', '>', date("Y-m-d"))
+            ->orderBy('trips.date')
+            ->get();
+    }
+
     public function allBuses(): Collection
     {
         return DB::table('company_transport as ct')
@@ -73,9 +85,10 @@ class Trip extends Model
     public function searchTrips($from, $to, $date): Collection
     {
         return DB::table('trips')
-            ->selectRaw('trips.*,trips.id as t_id,s.name as start_name, e.name as end_name,companies.*,company_transport.*')
+            ->selectRaw('trips.*,trips.id as t_id,s.name as start_name, e.name as end_name,companies.*,company_transport.*, transports.ac_type, (select count(*) from reservations where reservations.trip_id = trips.id and reservations.seat_status = 0) as seats_left')
             ->join('companies', 'trips.company_id', 'companies.id')
             ->join('company_transport', 'trips.bus_id', 'company_transport.id')
+            ->join('transports', 'company_transport.transport_type_id', 'transports.id')
             ->join('districts as s', 's.id', '=', 'trips.start_point')
             ->join('districts as e', 'e.id', '=', 'trips.end_point')
             ->where('trips.start_point', $from)

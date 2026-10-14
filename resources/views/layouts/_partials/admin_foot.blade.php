@@ -31,6 +31,15 @@
 <script>
     $(function () {
         $('.select2').select2()
+
+        // Mark the sidebar link for the current page and open its group.
+        var here = window.location.pathname.replace(/\/$/, '');
+        $('.nav-sidebar a.nav-link').each(function () {
+            var path = this.pathname ? this.pathname.replace(/\/$/, '') : '';
+            if (this.getAttribute('href') !== '#' && path === here) {
+                $(this).addClass('active').parents('.has-treeview').addClass('menu-open').children('.nav-treeview').show();
+            }
+        });
     });
 </script>
 </body>

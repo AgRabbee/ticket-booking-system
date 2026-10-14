@@ -1,228 +1,95 @@
 @extends('layouts.public')
 
-@section('page_header')
-    <div class="card card-info">
-        <div class="card-header">
-            <h3>User Profile</h3>
-        </div>
-    </div>
-@endsection
+@section('title', 'Profile')
 
 @section('content')
-        <div class="row">
-          <div class="col-md-3">
-            <!-- Profile Image -->
-            <div class="card card-info card-outline">
-              <div class="card-body box-profile">
-                <div class="text-center">
-                  <img class="profile-user-img img-fluid img-circle" src="{{ asset('images/user2-160x160.jpg')}}" alt="User profile picture">
-                </div>
+    @php $user = Auth::user(); @endphp
 
-                <h3 class="profile-username text-center">{{Auth::user()->first_name. ' ' . Auth::user()->last_name}}</h3>
+    <div class="pagehead">
+        <div class="wrap">
+            <h1>Your profile</h1>
+            <p>Keep your contact details current and change your password.</p>
+        </div>
+    </div>
 
-                <p class="text-muted text-center">{{ Auth::user()->roles[0]->name}}</p>
+    <div class="wrap pull">
+        <div class="profile">
+            <aside class="sheet sheet--lg profile__card">
+                <span class="avatar avatar--lg" aria-hidden="true">{{ mb_substr($user->first_name, 0, 1) }}</span>
+                <h2>{{ ucfirst($user->first_name) . ' ' . ucfirst($user->last_name) }}</h2>
+                <p class="muted" style="overflow-wrap:anywhere">{{ $user->email }}</p>
+                <p style="margin-top:12px"><span class="chip chip--green">{{ $user->roles->pluck('name')->first() ?? 'Customer' }}</span></p>
+            </aside>
 
-              </div>
-              <!-- /.card-body -->
+            <div class="stack">
+                @if ($errors->any())
+                    <div class="alert alert--danger" role="alert">
+                        <span class="icon" aria-hidden="true">error</span>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form class="sheet sheet--lg" action="{{ url('/dashboard/users/' . $user->id . '/update') }}" method="post">
+                    @csrf
+                    <h2 class="sheet__title">Details</h2>
+                    <div class="form-grid form-grid--2">
+                        <label class="field @error('first_name') field--error @enderror">
+                            <span class="field__label">First name</span>
+                            <input type="text" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}" required>
+                        </label>
+                        <label class="field @error('last_name') field--error @enderror">
+                            <span class="field__label">Last name</span>
+                            <input type="text" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}" required>
+                        </label>
+                        <div style="grid-column:1 / -1">
+                            <label class="field">
+                                <span class="field__label">Email</span>
+                                <input type="email" id="email" value="{{ $user->email }}" readonly>
+                            </label>
+                            <p class="field-hint">Your email is your sign-in name and can't be changed here.</p>
+                        </div>
+                        <label class="field @error('phone') field--error @enderror">
+                            <span class="field__label">Phone</span>
+                            <input type="tel" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" required>
+                        </label>
+                        <label class="field @error('nid') field--error @enderror">
+                            <span class="field__label">NID number</span>
+                            <input type="text" inputmode="numeric" id="nid" name="nid" value="{{ old('nid', $user->nid) }}" required>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit">Save details</button>
+                    </div>
+                </form>
+
+                <form class="sheet sheet--lg" action="{{ url('/dashboard/users/' . $user->id . '/changePassword') }}" method="post">
+                    @csrf
+                    <h2 class="sheet__title">Change password</h2>
+                    <div class="form-grid">
+                        <label class="field @error('c_password') field--error @enderror">
+                            <span class="field__label">Current password</span>
+                            <input id="c_password" type="password" name="c_password" autocomplete="current-password" required>
+                        </label>
+                        <div class="form-grid form-grid--2">
+                            <label class="field @error('password') field--error @enderror">
+                                <span class="field__label">New password</span>
+                                <input id="password" type="password" name="password" autocomplete="new-password" required>
+                            </label>
+                            <label class="field">
+                                <span class="field__label">Confirm new password</span>
+                                <input id="password-confirm" type="password" name="password_confirmation" autocomplete="new-password" required>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn--tonal" type="submit">Change password</button>
+                    </div>
+                </form>
             </div>
-            <!-- /.card -->
-
-
-
-
-
-            <!-- About Me Box -->
-            <div class="card card-info">
-              <div class="card-header">
-                <h3 class="card-title">About Me</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <strong><i class="fas fa-book mr-1"></i> Education</strong>
-
-                <p class="text-muted"> Business in Information Technology from the <strong>University of Greenwich</strong></p>
-
-                <hr>
-
-                <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
-
-                <p class="text-muted">Dhaka, Bangladesh</p>
-
-                <hr>
-
-                <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
-
-                <p class="text-muted">
-                  <span class="tag tag-danger">UI Design</span>
-                  <span class="tag tag-success">Web Developing</span>
-                  <span class="tag tag-info">Javascript</span>
-                  <span class="tag tag-warning">PHP</span>
-                  <span class="tag tag-primary">Laravel</span>
-                </p>
-
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-          <div class="col-md-9">
-             <div class="card">
-               <div class="card-header p-2">
-                 <ul class="nav nav-pills">
-                   <li class="nav-item"><a class="nav-link active" href="#userDetails" data-toggle="tab">Details</a></li>
-                   <li class="nav-item"><a class="nav-link" href="#passwrd" data-toggle="tab">Change Password</a></li>
-                 </ul>
-               </div><!-- /.card-header -->
-               <div class="card-body card-info">
-                 <div class="tab-content">
-                   <div class="active tab-pane" id="userDetails">
-                     <form class="form-horizontal">
-                       <div class="form-group">
-                         <label for="first_name" class="col-sm-2 control-label">First Name</label>
-
-                         <div class="col-sm-10">
-                           <input type="text" class="form-control" id="first_name" value="{{ Auth::user()->first_name }}" readonly>
-                         </div>
-                       </div>
-                       <div class="form-group">
-                         <label for="last_name" class="col-sm-2 control-label">Last Name</label>
-
-                         <div class="col-sm-10">
-                           <input type="text" class="form-control" id="last_name" value="{{ Auth::user()->last_name }}" readonly>
-                         </div>
-                       </div>
-                       <div class="form-group">
-                         <label for="email" class="col-sm-2 control-label">Email</label>
-
-                         <div class="col-sm-10">
-                           <input type="email" class="form-control" id="email" value="{{ Auth::user()->email }}" readonly>
-                         </div>
-                       </div>
-                       <div class="form-group">
-                         <label for="phone" class="col-sm-2 control-label">Phone</label>
-
-                         <div class="col-sm-10">
-                           <input type="text" class="form-control" id="phone" value="{{ Auth::user()->phone }}" readonly>
-                         </div>
-                       </div>
-                       <div class="form-group">
-                         <label for="nid" class="col-sm-2 control-label">NID</label>
-
-                         <div class="col-sm-10">
-                           <input type="text" class="form-control" id="nid" value="{{ Auth::user()->nid }}" readonly>
-                         </div>
-                       </div>
-
-
-                       <div class="form-group">
-                         <div class="col-sm-offset-2 col-sm-10">
-                            <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-edit">Update Details</a>
-                         </div>
-                       </div>
-                     </form>
-                   </div>
-                   <!-- /.tab-pane -->
-                   <div class="tab-pane" id="passwrd">
-                       <form class="" action="{{ url('/profile/changePassword') }}" method="post">
-                           @csrf
-                           <div class="form-group row">
-                               <label for="c_password" class="col-md-4 col-form-label text-md-right">{{ __('Current Password') }}</label>
-
-                               <div class="col-md-6">
-                                   <input id="c_password" type="password" class="form-control @error('c_password') is-invalid @enderror" name="c_password" required autocomplete="new-password">
-
-                                   @error('c_password')
-                                       <span class="invalid-feedback" role="alert">
-                                           <strong>{{ $message }}</strong>
-                                       </span>
-                                   @enderror
-                               </div>
-                           </div>
-                           <div class="form-group row">
-                               <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('New Password') }}</label>
-
-                               <div class="col-md-6">
-                                   <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                   @error('password')
-                                       <span class="invalid-feedback" role="alert">
-                                           <strong>{{ $message }}</strong>
-                                       </span>
-                                   @enderror
-                               </div>
-                           </div>
-
-                           <div class="form-group row">
-                               <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                               <div class="col-md-6">
-                                   <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                               </div>
-                           </div>
-                           <div class="form-group">
-                               <input type="submit" class="btn btn-primary btn-sm" value="Change Password">
-                           </div>
-                       </form>
-                   </div>
-                   <!-- /.tab-pane -->
-                 </div>
-                 <!-- /.tab-content -->
-               </div><!-- /.card-body -->
-             </div>
-             <!-- /.nav-tabs-custom -->
-           </div>
-
-
-          <!--edit modal-->
-          <div class="modal fade" id="modal-edit" aria-hidden="true" style="display: none;">
-           <div class="modal-dialog">
-               <form class="" action="{{ url('/profile') }}" method="post">
-                   @csrf
-               <div class="modal-content">
-                   <div class="modal-header">
-                       <h4 class="modal-title">User Details</h4>
-                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                       <span aria-hidden="true">×</span>
-                       </button>
-                   </div>
-                   <div class="modal-body">
-                       <div class="form-group">
-                           <label for="first_name">First Name</label>
-                           <input type="text" class="form-control" id="first_name" name="first_name" value="{{ Auth::user()->first_name }}">
-                       </div>
-
-                       <div class="form-group">
-                           <label for="last_name">Last Name</label>
-                           <input type="text" class="form-control" id="last_name" name="last_name" value="{{ Auth::user()->last_name }}">
-                       </div>
-
-                       <div class="form-group">
-                           <label for="email">Email</label>
-                           <input type="email" class="form-control" id="email" name="email" value="{{ Auth::user()->email }}" readonly>
-                       </div>
-
-                       <div class="form-group">
-                           <label for="phone">Phone</label>
-                           <input type="text" class="form-control" id="phone" name="phone" value="{{ Auth::user()->phone }}" >
-                       </div>
-                       <div class="form-group">
-                           <label for="nid">NID</label>
-                           <input type="text" class="form-control" id="nid" name="nid" value="{{ Auth::user()->nid }}" >
-                       </div>
-                   </div>
-                   <div class="modal-footer ">
-                       <input type="submit" class="btn btn-primary" name="" value="Update changes">
-                   </div>
-               </div>
-               <!-- /.modal-content -->
-
-              </form>
-           </div>
-          <!-- /.modal-dialog -->
-          </div>
-          <!--modal-->
-
-      </div>
-
+        </div>
+    </div>
 @endsection

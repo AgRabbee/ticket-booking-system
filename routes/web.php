@@ -35,6 +35,8 @@ Route::prefix('')->group(function () {
     Route::get('/print', [ PagesController::class, 'print' ]);
     Route::get('/print_invoice', [ PagesController::class, 'print_invoice' ]);
 
+    Route::post('/demo/trips', [ PagesController::class, 'demoTrips' ])->middleware('throttle:6,1');
+
     Route::get('/contact', [ PagesController::class, 'contact_form' ]);
     Route::post('/contact', [ PagesController::class, 'contact_admin' ]);
 });
@@ -52,12 +54,12 @@ Route::middleware([ 'auth', 'superAdmin' ])
 
         Route::prefix('users')->group(function () {
             Route::get('/', [ UserController::class, 'index' ]);
-            Route::post('/{status}', [ UserController::class, 'updateStatus' ]);
+            Route::post('/{status}', [ UserController::class, 'updateStatus' ])->middleware('demo');
         });
 
         Route::prefix('admins')->group(function () {
             Route::get('/', [ CompanyController::class, 'index' ]);
-            Route::post('/{status}', [ CompanyController::class, 'updateStatus' ]);
+            Route::post('/{status}', [ CompanyController::class, 'updateStatus' ])->middleware('demo');
         });
 
         Route::get('/all/trips', [ TripController::class, 'allTrips' ]);
@@ -69,7 +71,7 @@ Route::middleware([ 'auth', 'superAdmin' ])
         Route::get('/add/transport_type', [ TransportController::class, 'create' ]);
         Route::post('/add/transport', [ TransportController::class, 'store' ]);
         Route::post('/edit/{id}/transport', [ TransportController::class, 'update' ]);
-        Route::post('/delete/{id}/transport', [ TransportController::class, 'destroy' ]);
+        Route::post('/delete/{id}/transport', [ TransportController::class, 'destroy' ])->middleware('demo');
 
         Route::get('/sales/reports', [ ReportController::class, 'allSalesReports' ]);
     });
@@ -111,7 +113,7 @@ Route::middleware([ 'auth' ])
     ->group(function () {
         Route::get('/{user}', [ UserController::class, 'show' ]);
         Route::post('/{user}/update', [ UserController::class, 'update' ]);
-        Route::post('/{user}/changePassword', [ UserController::class, 'passwordChange' ]);
+        Route::post('/{user}/changePassword', [ UserController::class, 'passwordChange' ])->middleware('demo');
     });
 /*
 |--------------------------------------------------------------------------

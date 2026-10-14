@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Ticket Booking System</title>
+  <title>Dashboard · Ticket Booking System</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -23,11 +23,12 @@
   <!-- select2 -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css">
   @yield('admin_css')
-    <style>
-        .select2-container .select2-selection--single{
-            height: inherit;
-        }
-    </style>
+  <!-- Ticket Booking System theme -->
+  <link rel="icon" type="image/svg+xml" href="{{ asset('images/tbs-mark.svg') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="{{ asset('css/tbs-admin.css') }}?v={{ filemtime(public_path('css/tbs-admin.css')) }}">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">

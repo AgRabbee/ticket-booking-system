@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('demo:trips', function (App\Services\DemoTripService $demoTrips) {
+    $this->info($demoTrips->generate() . ' demo trips created.');
+})->purpose('Generate bookable demo trips for the coming days');

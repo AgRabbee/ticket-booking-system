@@ -3,20 +3,18 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ url('/' )}}" class="brand-link">
-      <img src="{{ asset('images/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-           style="opacity: .8">
-      <span class="brand-text font-weight-light">Ticket Booking System</span>
+      @include('layouts._partials.brand')
+      <span class="brand-text">Ticket Booking System</span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{{ asset('images/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
-        </div>
+        <span class="tbs-avatar" aria-hidden="true">{{ mb_substr(Auth::user()->first_name, 0, 1) }}</span>
         <div class="info">
-          <a href="{{ url('/company/admin/profile') }}" class="d-block">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name}}</a>
+          <a href="{{ url('/dashboard/users/'.Auth::user()->id) }}" class="d-block">{{ ucfirst(Auth::user()->first_name) . ' ' . ucfirst(Auth::user()->last_name)}}</a>
+          <small>{{ Auth::user()->companies[0]->company_name }}</small>
         </div>
       </div>
 
